@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { sidebarItems } from "./SidebarItems"
+import { sidebarItems } from "../SidebarItems"
 import { useEffect, useState } from "react"
 
 export function SiteHeader() {

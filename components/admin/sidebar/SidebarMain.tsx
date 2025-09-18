@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import { SidebarGroup, SidebarMenu } from "@/components/ui/sidebar"
-import SidebarItem from "./SidebarItem"
+import SidebarItem from "./admin/SidebarItem"
 
 export default function SidebarMainSection({
     sidebarItems,

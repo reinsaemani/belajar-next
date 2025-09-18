@@ -1,6 +1,6 @@
 "use client"
 
-import { NavUser } from "./SidebarUser"
+import { NavUser } from "../SidebarUser"
 
 export default function SidebarFooterSection({
     user,

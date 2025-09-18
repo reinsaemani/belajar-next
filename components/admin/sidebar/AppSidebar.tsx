@@ -10,10 +10,10 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar"
 
-import { sidebarItems, user } from "./SidebarItems"
-import SidebarHeaderSection from "./SidebarHeader"
+import { sidebarItems, user } from "../SidebarItems"
 import SidebarMainSection from "./SidebarMain"
 import SidebarFooterSection from "./SidebarFooter"
+import SidebarHeaderSection from "./SidebarHeader"
 
 
 export function AppSidebar() {
