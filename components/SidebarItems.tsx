@@ -1,15 +1,17 @@
-"use client";
-
 import {
   LayoutDashboard,
   Inbox,
   Search,
   Settings,
   User,
-  Calendar,
-  icons,
   Calendar1Icon,
-} from "lucide-react";
+} from "lucide-react"
+
+export const user = {
+  name: "shadcn",
+  email: "m@example.com",
+  avatar: "/logo_waleta.svg",
+}
 
 export const sidebarItems = [
   {
@@ -24,29 +26,29 @@ export const sidebarItems = [
   },
   {
     title: "Manage Applicants",
-    url: "#",
+    url: "/applicants",
     icon: User,
     items: [
       {
         title: "All Applicants",
-        url: "/applications",
-        icons: User,
+        url: "/applicants/all-applicants",
+        icon: User,
       },
       {
         title: "Recruitment Stages",
         url: "/recruitment-stages",
-        icons: Calendar1Icon,
+        icon: Calendar1Icon,
       },
     ],
   },
   {
     title: "Search",
-    url: "#",
+    url: "/search",
     icon: Search,
   },
   {
     title: "Settings",
-    url: "#",
+    url: "/settings",
     icon: Settings,
   },
-];
+]

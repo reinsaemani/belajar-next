@@ -1,14 +1,32 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
-import { sidebarItems } from "./SidebarItems";
+import { usePathname } from "next/navigation"
+import { Separator } from "@/components/ui/separator"
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { sidebarItems } from "./SidebarItems"
+import { useEffect, useState } from "react"
 
 export function SiteHeader() {
-  const pathname = usePathname();
-  const activeItem = sidebarItems.find((item) => pathname === item.url);
+  const pathname = usePathname()
+  const activeItem = sidebarItems.find((item) => pathname === item.url)
+
+  const [time, setTime] = useState<string>("")
+
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date()
+      const formatted = now.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+      setTime(formatted)
+    }
+
+    updateClock()
+    const interval = setInterval(updateClock, 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -22,18 +40,9 @@ export function SiteHeader() {
           {activeItem ? activeItem.title : "Documents"}
         </h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            <a
-              href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="dark:text-foreground"
-            >
-              GitHub
-            </a>
-          </Button>
+          <span className="text-sm font-sans font-semibold border-y-8">{time}</span>
         </div>
       </div>
     </header>
-  );
+  )
 }

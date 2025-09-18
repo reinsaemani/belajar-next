@@ -1,79 +1,55 @@
-"use client";
+"use client"
 
+import { useEffect, useState } from "react"
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
+  SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarRail,
   SidebarSeparator,
-  useSidebar,
-} from "@/components/ui/sidebar";
-import Link from "next/link";
-import Image from "next/image";
-import React from "react";
-import { usePathname } from "next/navigation";
-import { sidebarItems } from "./SidebarItems";
+} from "@/components/ui/sidebar"
+
+import { sidebarItems, user } from "./SidebarItems"
+import SidebarHeaderSection from "./SidebarHeader"
+import SidebarMainSection from "./SidebarMain"
+import SidebarFooterSection from "./SidebarFooter"
+
 
 export function AppSidebar() {
-  const pathname = usePathname();
-  const { isMobile, setOpenMobile } = useSidebar();
+  const [loading, setLoading] = useState(true)
+  const [activeNavUser, setActiveNavUser] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 1200)
+    return () => clearTimeout(t)
+  }, [])
 
   return (
     <Sidebar collapsible="icon" variant="inset">
+      {/* Header */}
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem className="flex justify-center items-center">
-            <SidebarMenuButton
-              size={"lg"}
-              className="w-fit py-10 bg-sidebar !bg-sidebar hover:shadow-lg focus:!bg-sidebar active:!bg-sidebar"
-              variant={"outline"}
-              isActive={false}
-            >
-              <Link href={"/dashboard"}>
-                <Image
-                  src={"./logo_waleta.svg"}
-                  alt="cb"
-                  width={80}
-                  height={80}
-                ></Image>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <SidebarHeaderSection />
         <SidebarSeparator />
       </SidebarHeader>
+
+      {/* Main Content */}
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {sidebarItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    size={"lg"}
-                    isActive={pathname === item.url}
-                    className="hover:bg-pink-100 dark:hover:bg-pink-900 data-[active=true]:bg-pink-500 data-[active=true]:text-white text-white"
-                  >
-                    <Link
-                      href={item.url}
-                      onClick={() => {
-                        if (isMobile) setOpenMobile(false);
-                      }}
-                    >
-                      <item.icon />
-                      <span className="font-bold">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <SidebarMainSection
+          sidebarItems={sidebarItems}
+          activeNavUser={activeNavUser}
+        />
       </SidebarContent>
+
+      {/* Footer */}
+      <SidebarFooter>
+        <SidebarFooterSection
+          user={user}
+          setActiveNavUser={setActiveNavUser}
+        />
+      </SidebarFooter>
+
+      <SidebarRail />
     </Sidebar>
-  );
+  )
 }
