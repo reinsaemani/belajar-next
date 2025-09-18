@@ -1,6 +1,15 @@
 "use client";
 
-import { LayoutDashboard, Inbox, Search, Settings, User, Calendar } from "lucide-react";
+import {
+  LayoutDashboard,
+  Inbox,
+  Search,
+  Settings,
+  User,
+  Calendar,
+  icons,
+  Calendar1Icon,
+} from "lucide-react";
 
 export const sidebarItems = [
   {
@@ -9,14 +18,26 @@ export const sidebarItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Inbox",
-    url: "#",
+    title: "Manage Vacancies",
+    url: "/vacancies",
     icon: Inbox,
   },
   {
-    title: "Calendar",
+    title: "Manage Applicants",
     url: "#",
-    icon: Calendar,
+    icon: User,
+    items: [
+      {
+        title: "All Applicants",
+        url: "/applications",
+        icons: User,
+      },
+      {
+        title: "Recruitment Stages",
+        url: "/recruitment-stages",
+        icons: Calendar1Icon,
+      },
+    ],
   },
   {
     title: "Search",
