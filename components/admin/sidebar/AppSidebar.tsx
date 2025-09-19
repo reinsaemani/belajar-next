@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -8,22 +8,21 @@ import {
   SidebarHeader,
   SidebarRail,
   SidebarSeparator,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-import { sidebarItems, user } from "../SidebarItems"
-import SidebarMainSection from "./SidebarMain"
-import SidebarFooterSection from "./SidebarFooter"
-import SidebarHeaderSection from "./SidebarHeader"
-
+import { sidebarItems, user } from "../SidebarItems";
+import SidebarMainSection from "./SidebarMain";
+import SidebarFooterSection from "./SidebarFooter";
+import SidebarHeaderSection from "./SidebarHeader";
 
 export function AppSidebar() {
-  const [loading, setLoading] = useState(true)
-  const [activeNavUser, setActiveNavUser] = useState(false)
+  const [loading, setLoading] = useState(true);
+  const [activeNavUser, setActiveNavUser] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 1200)
-    return () => clearTimeout(t)
-  }, [])
+    const t = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <Sidebar collapsible="icon" variant="inset">
@@ -43,13 +42,8 @@ export function AppSidebar() {
 
       {/* Footer */}
       <SidebarFooter>
-        <SidebarFooterSection
-          user={user}
-          setActiveNavUser={setActiveNavUser}
-        />
+        <SidebarFooterSection user={user} setActiveNavUser={setActiveNavUser} />
       </SidebarFooter>
-
-      <SidebarRail />
     </Sidebar>
-  )
+  );
 }
