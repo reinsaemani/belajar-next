@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { usePathname } from "next/navigation"
-import { SidebarGroup, SidebarMenu } from "@/components/ui/sidebar"
-import SidebarItem from "./admin/SidebarItem"
+import { usePathname } from "next/navigation";
+import { SidebarGroup, SidebarMenu } from "@/components/ui/sidebar";
+import SidebarItem from "./SidebarItem";
 
 export default function SidebarMainSection({
-    sidebarItems,
-    activeNavUser,
+  sidebarItems,
+  activeNavUser,
 }: {
-    sidebarItems: any[]
-    activeNavUser: boolean
+  sidebarItems: any[];
+  activeNavUser: boolean;
 }) {
-    const pathname = usePathname()
+  const pathname = usePathname();
 
-    return (
-        <SidebarGroup>
-            <SidebarMenu className="space-y-1">
-                {sidebarItems.map((item) => (
-                    <SidebarItem
-                        key={item.title}
-                        item={item}
-                        pathname={pathname}
-                        activeNavUser={activeNavUser}
-                    />
-                ))}
-            </SidebarMenu>
-        </SidebarGroup>
-    )
+  return (
+    <SidebarGroup>
+      <SidebarMenu className="flex flex-3 gap-3">
+        {sidebarItems.map((item) => (
+          <SidebarItem
+            key={item.title}
+            item={item}
+            pathname={pathname}
+            activeNavUser={activeNavUser}
+          />
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
+  );
 }
