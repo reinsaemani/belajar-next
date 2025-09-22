@@ -46,8 +46,8 @@ export const useUpdateVacancyStatus = ({
       }
     },
     onSuccess: (...args) => {
-    //   queryClient.invalidateQueries({ queryKey: ['vacancies'] });
-    //   onSuccess?.(...args);
+      queryClient.invalidateQueries({ queryKey: ['vacancies'] });
+      onSuccess?.(...args);
     },
     ...restConfig,
   });
