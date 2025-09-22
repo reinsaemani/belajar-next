@@ -6,11 +6,10 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 
-import { sidebarItems, user } from "../SidebarItems";
+import { sidebarItems, user } from "./SidebarItems";
 import SidebarMainSection from "./SidebarMain";
 import SidebarFooterSection from "./SidebarFooter";
 import SidebarHeaderSection from "./SidebarHeader";

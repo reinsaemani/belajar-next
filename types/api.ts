@@ -14,11 +14,15 @@ export type Meta = {
 };
 
 export type Vacancy = Entity<{
+  vacancies_id: number;
   title: string;
+  location: string | null;
   type: string;
   degree: string;
   qualification: string;
   responsibilities: string;
+  documents: string | null;
+  benefit: string | null;
   deadline: string;
   is_open: boolean;
 }>;

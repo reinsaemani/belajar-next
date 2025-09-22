@@ -3,9 +3,9 @@
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { sidebarItems } from "../SidebarItems";
+import { sidebarItems } from "./SidebarItems";
 import { useEffect, useState } from "react";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Breadcrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { findBreadcrumbPath } from "@/lib/breadcrumbs";
 
 export function SiteHeader() {
