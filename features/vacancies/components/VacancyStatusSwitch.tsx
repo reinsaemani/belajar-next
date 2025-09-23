@@ -2,18 +2,17 @@
 'use client';
 
 import { Switch } from '@/components/ui/switch';
-import { SwitchSkeleton } from '@/components/skeleton/SkeletonSwitch';
 import { toast } from 'sonner';
 import { useUpdateVacancyStatus } from '../api/update-vacancy-status';
 
 interface VacancyStatusSwitchProps {
     id: string | number;
-    defaultChecked: boolean;
+    checked: boolean;
 }
 
 export function VacancyStatusSwitch({
     id,
-    defaultChecked,
+    checked,
 }: VacancyStatusSwitchProps) {
     const updateVacancyStatusMutation = useUpdateVacancyStatus();
 
@@ -28,13 +27,9 @@ export function VacancyStatusSwitch({
         );
     };
 
-    if (updateVacancyStatusMutation.isPending) {
-        return <SwitchSkeleton />;
-    }
-
     return (
         <div className="flex justify-center">
-            <Switch defaultChecked={defaultChecked} onCheckedChange={handleChange} />
+            <Switch checked={checked} onCheckedChange={handleChange} />
         </div>
     );
 }

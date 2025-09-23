@@ -50,7 +50,7 @@ export const VacanciesList = () => {
 
                 return (
                     <div className="flex justify-center">
-                        <VacancyStatusSwitch id={id} defaultChecked={isOpen} />
+                        <VacancyStatusSwitch id={id} checked={isOpen} />
                     </div>
                 );
             },
