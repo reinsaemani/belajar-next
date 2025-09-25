@@ -8,16 +8,23 @@ import { formatDate, formatType } from "@/utils/format";
 import { ColumnDef } from "@tanstack/react-table";
 import { VacancyStatusSwitch } from "./VacanciesStatusSwitch";
 import { TableActions } from "@/components/datatable/TableActions";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { VacancyView } from "./VacanciesView";
 import React from "react";
-import { VacancyAddEditModal } from "./VacancyAddEditModal";
+import { toast } from "sonner";
+import { VacancyAddEditModal } from "./VacanciesAddEditModal";
+import { DeleteVacancy } from "./VacanciesDelete";
 
 export const VacanciesList = () => {
   const [viewOpen, setViewOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
-  const [editData, setEditData] = React.useState<any>(null);
+  const [editData, setEditData] = React.useState<Partial<Vacancy> | null>(null);
 
   function handleView(row: Vacancy) {
     setSelectedId(row.vacancies_id);
@@ -33,21 +40,21 @@ export const VacanciesList = () => {
     setEditData(row);
     setModalOpen(true);
   }
-  function handleDelete(row: Vacancy) {
-    // misal: show dialog konfirmasi
-    if (confirm(`Hapus vacancy ID: ${row.vacancies_id}?`)) {
-      // ...panggil API hapus di sini
-      alert("Deleted!");
-    }
-  }
+
 
   const vacanciesQuery = useVacancies();
 
   const columns: ColumnDef<Vacancy>[] = [
-    { accessorKey: "title", header: "Title" },
+    {
+      accessorKey: "title",
+      header: "Title",
+      cell: ({ getValue }) => (
+        <span className="font-medium">{getValue<string>()}</span>
+      ),
+    },
     {
       accessorKey: "type",
-      header: "Type",
+      header: () => <div className="text-center">Type</div>,
       cell: ({ getValue }) => (
         <span className="block text-center">
           {formatType(getValue<string>())}
@@ -56,14 +63,14 @@ export const VacanciesList = () => {
     },
     {
       accessorKey: "degree",
-      header: "Degree",
+      header: () => <div className="text-center">Degree</div>,
       cell: ({ getValue }) => (
         <span className="block text-center">{getValue<string>()}</span>
       ),
     },
     {
       accessorKey: "deadline",
-      header: "Deadline",
+      header: () => <div className="text-center">Deadline</div>,
       cell: ({ getValue }) => {
         const deadlineStr = getValue<string>();
         return (
@@ -75,17 +82,15 @@ export const VacanciesList = () => {
     },
     {
       accessorKey: "is_open",
-      header: "Status",
-      cell: ({ row }) => {
-        const id = row.original.vacancies_id;
-        const isOpen = row.original.is_open as boolean;
-
-        return (
-          <div className="flex justify-center">
-            <VacancyStatusSwitch id={id} checked={isOpen} />
-          </div>
-        );
-      },
+      header: () => <div className="text-center">Status</div>,
+      cell: ({ row }) => (
+        <div className="flex justify-center">
+          <VacancyStatusSwitch
+            id={row.original.vacancies_id}
+            checked={row.original.is_open}
+          />
+        </div>
+      ),
     },
     {
       id: "actions",
@@ -94,14 +99,15 @@ export const VacanciesList = () => {
         <TableActions
           onView={() => handleView(row.original)}
           onEdit={() => handleEdit(row.original)}
-          onDelete={() => handleDelete(row.original)}
+          vacancy={row.original}
         />
       ),
     },
   ];
 
-  if (vacanciesQuery.isLoading)
+  if (vacanciesQuery.isLoading) {
     return <SkeletonTable columns={columns.length} rows={5} />;
+  }
 
   const vacancies = vacanciesQuery.data?.data;
   if (!vacancies) return null;
@@ -114,17 +120,24 @@ export const VacanciesList = () => {
         onAddClick={handleAdd}
         addLabel="Add Vacancies"
       />
+
+      {/* View Modal */}
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
         <DialogContent className="max-w-2xl">
-          <DialogTitle>Vacancy Detail</DialogTitle>
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold">
+              Vacancy Detail
+            </DialogTitle>
+          </DialogHeader>
           {selectedId && <VacancyView vacancyId={selectedId} />}
         </DialogContent>
       </Dialog>
 
+      {/* Add/Edit Modal */}
       <VacancyAddEditModal
         open={modalOpen}
         onOpenChange={setModalOpen}
-        initialData={editData}
+        initialData={editData ?? undefined}
         mode={editData ? "edit" : "add"}
       />
     </>

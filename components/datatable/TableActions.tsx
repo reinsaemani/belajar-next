@@ -7,6 +7,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DeleteVacancy } from "@/features/vacancies/components/VacanciesDelete";
+import { Vacancy } from "@/types/api";
 import { Eye, Pencil, Trash, MoreHorizontal } from "lucide-react";
 import * as React from "react";
 
@@ -14,9 +16,11 @@ interface TableActionsProps {
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  customDeleteButton?: React.ReactNode;
+  vacancy?: Vacancy;
 }
 
-export function TableActions({ onView, onEdit, onDelete }: TableActionsProps) {
+export function TableActions({ onView, onEdit, onDelete, customDeleteButton, vacancy }: TableActionsProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,9 +37,9 @@ export function TableActions({ onView, onEdit, onDelete }: TableActionsProps) {
         <DropdownMenuItem onClick={onEdit}>
           <Pencil className="w-4 h-4 mr-2" /> Edit
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onDelete} className="text-destructive">
-          <Trash className="w-4 h-4 mr-2" /> Delete
-        </DropdownMenuItem>
+        <div className="px-2 py-1">
+          {vacancy && <DeleteVacancy vacancy={vacancy} />}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

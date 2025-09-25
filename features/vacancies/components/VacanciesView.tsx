@@ -1,99 +1,105 @@
 "use client";
+
+import {
+  Briefcase,
+  MapPin,
+  GraduationCap,
+  Calendar,
+  FileText,
+  ClipboardList,
+  Gift,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 import { formatDate, formatType } from "@/utils/format";
 import { useVacancy } from "../api/get-vacancy";
 import { SkeletonDetailView } from "@/components/skeleton/SkeletonDetailView";
 
-function StatusBadge({ isOpen }: { isOpen: boolean }) {
-  return (
-    <span
-      className={
-        "inline-block px-2 py-0.5 rounded-full text-xs font-semibold " +
-        (isOpen
-          ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-          : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300")
-      }
-    >
-      {isOpen ? "Open" : "Closed"}
-    </span>
-  );
-}
-
 export function VacancyView({ vacancyId }: { vacancyId: number }) {
   const vacancyQuery = useVacancy({ vacancyId });
 
-  if (vacancyQuery.isLoading) {
-    return <SkeletonDetailView />;
-  }
+  if (vacancyQuery.isLoading) return <SkeletonDetailView />;
 
   const vacancy = vacancyQuery.data?.data;
   if (!vacancy) return null;
 
   return (
-    <div className="bg-white dark:bg-muted rounded-lg shadow p-6 w-full max-w-2xl space-y-3">
-      <h1 className="font-bold text-2xl mb-2">{vacancy.title}</h1>
+    <div className="space-y-6 py-2">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <Briefcase className="w-6 h-6 text-primary" />
+          {vacancy.title}
+        </h2>
+        <p className="text-sm text-muted-foreground flex items-center gap-1">
+          <MapPin className="w-4 h-4" />
+          {vacancy.location || "Location not specified"}
+        </p>
+      </div>
 
-      <div>
-        <span className="text-sm font-semibold">Tipe:</span>{" "}
-        <span>{formatType(vacancy.type)}</span>
-      </div>
-      <div>
-        <span className="text-sm font-semibold">Degree:</span>{" "}
-        <span>{vacancy.degree}</span>
-      </div>
-      <div>
-        <span className="text-sm font-semibold">Location:</span>{" "}
-        <span>
-          {vacancy.location || (
-            <span className="text-muted-foreground italic">-</span>
-          )}
+      {/* Status */}
+      <Section icon={vacancy.is_open ? CheckCircle2 : XCircle} title="Status">
+        <span
+          className={
+            "px-3 py-1 rounded-full text-xs font-semibold " +
+            (vacancy.is_open
+              ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+              : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300")
+          }
+        >
+          {vacancy.is_open ? "Open" : "Closed"}
         </span>
+      </Section>
+
+      <Section icon={Briefcase} title="Type">
+        {formatType(vacancy.type)}
+      </Section>
+
+      <Section icon={GraduationCap} title="Degree">
+        {vacancy.degree || "-"}
+      </Section>
+
+      <Section icon={Calendar} title="Deadline">
+        {vacancy.deadline
+          ? formatDate(new Date(vacancy.deadline).getTime())
+          : "-"}
+      </Section>
+
+      <Section icon={GraduationCap} title="Qualification">
+        {vacancy.qualification || "-"}
+      </Section>
+
+      <Section icon={ClipboardList} title="Responsibilities">
+        {vacancy.responsibilities || "-"}
+      </Section>
+
+      <Section icon={FileText} title="Documents">
+        {vacancy.documents || "-"}
+      </Section>
+
+      <Section icon={Gift} title="Benefit">
+        {vacancy.benefit || "-"}
+      </Section>
+    </div>
+  );
+}
+
+function Section({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: React.ElementType;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+        <Icon className="w-4 h-4" />
+        {title}
       </div>
-      <div>
-        <span className="text-sm font-semibold">Deadline:</span>{" "}
-        <span>
-          {vacancy.deadline ? (
-            formatDate(new Date(vacancy.deadline).getTime())
-          ) : (
-            <span className="text-muted-foreground italic">-</span>
-          )}
-        </span>
-      </div>
-      <div>
-        <span className="text-sm font-semibold">Qualification:</span>{" "}
-        <span>
-          {vacancy.qualification || (
-            <span className="text-muted-foreground italic">-</span>
-          )}
-        </span>
-      </div>
-      <div>
-        <span className="text-sm font-semibold">Responsibilities:</span>{" "}
-        <span>
-          {vacancy.responsibilities || (
-            <span className="text-muted-foreground italic">-</span>
-          )}
-        </span>
-      </div>
-      <div>
-        <span className="text-sm font-semibold">Documents:</span>{" "}
-        <span>
-          {vacancy.documents || (
-            <span className="text-muted-foreground italic">-</span>
-          )}
-        </span>
-      </div>
-      <div>
-        <span className="text-sm font-semibold">Benefit:</span>{" "}
-        <span>
-          {vacancy.benefit || (
-            <span className="text-muted-foreground italic">-</span>
-          )}
-        </span>
-      </div>
-      <div>
-        <span className="text-sm font-semibold">Status:</span>{" "}
-        <StatusBadge isOpen={vacancy.is_open} />
-      </div>
+      <div className="text-sm">{children}</div>
     </div>
   );
 }

@@ -6,28 +6,36 @@ import { Vacancy } from '@/types/api';
 
 // Schema optional update
 export const updateVacancyInputSchema = z.object({
-  id: z.string().min(1),
+  id: z.union([z.string(), z.number()]), // support string & number
   title: z.string().optional(),
   degree: z.string().optional(),
   deadline: z.string().optional(),
   type: z.string().optional(),
   location: z.string().optional(),
+  qualification: z.string().optional(),
+  responsibilities: z.string().optional(),
+  documents: z.string().optional(),
+  benefit: z.string().optional(),
   is_open: z.boolean().optional(),
 });
 
 export type UpdateVacancyInput = z.infer<typeof updateVacancyInputSchema>;
 
-export const updateVacancy = ({ id, ...data }: UpdateVacancyInput) => {
-  return api.put(`/vacancies/${id}`, data);
+// API update
+export const updateVacancy = async ({ id, ...data }: UpdateVacancyInput) => {
+  const res = await api.put<Vacancy>(`/vacancies/${id}`, data);
+  return res;
 };
 
 type UseUpdateVacancyOptions = {
   mutationConfig?: MutationConfig<typeof updateVacancy>;
 };
 
-export const useUpdateVacancy = ({ mutationConfig }: UseUpdateVacancyOptions = {}) => {
+// Hook
+export const useUpdateVacancy = ({
+  mutationConfig,
+}: UseUpdateVacancyOptions = {}) => {
   const queryClient = useQueryClient();
-
   const { onSuccess, ...restConfig } = mutationConfig || {};
 
   return useMutation({

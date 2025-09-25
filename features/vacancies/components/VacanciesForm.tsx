@@ -1,6 +1,11 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createVacancySchema, CreateVacancyInput } from "../api/create-vacancy";
+import {
+  createVacancySchema,
+  CreateVacancyInput,
+} from "../api/create-vacancy";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -20,24 +25,30 @@ const VACANCY_DEGREES = [
   { value: "Magister", label: "Magister" },
 ];
 
-type Province = { id: string; name: string };
-type Regency = { id: string; name: string };
-
 type VacancyFormProps = {
   initialData?: Partial<CreateVacancyInput>;
-  onSubmit: (data: CreateVacancyInput) => void;
+  onSubmit: (data: CreateVacancyInput) => Promise<void>;
+  onCancel: () => void;
   loading?: boolean;
 };
+
+function formatDateInput(date?: string | Date) {
+  if (!date) return "";
+  const d = new Date(date);
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${year}-${month}-${day}`;
+}
 
 export function VacancyForm({
   initialData,
   onSubmit,
+  onCancel,
   loading,
-}: {
-  initialData?: Partial<CreateVacancyInput>;
-  onSubmit: (data: CreateVacancyInput) => void;
-  loading?: boolean;
-}) {
+}: VacancyFormProps) {
+  const isEditMode = !!initialData?.title;
+
   const {
     register,
     handleSubmit,
@@ -49,27 +60,23 @@ export function VacancyForm({
     resolver: zodResolver(createVacancySchema),
     defaultValues: {
       ...initialData,
+      deadline: formatDateInput(initialData?.deadline),
       is_open: initialData?.is_open ?? true,
     },
   });
 
-  // === State for Provinsi & Kota ===
-  const [provinces, setProvinces] = useState<{ code: string; name: string }[]>(
-    []
-  );
-  const [regencies, setRegencies] = useState<{ id: string; name: string }[]>(
-    []
-  );
+  const [provinces, setProvinces] = useState<{ code: string; name: string }[]>([]);
+  const [regencies, setRegencies] = useState<{ id: string; name: string }[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
 
-  // Fetch Provinces on mount
+  // Fetch Provinces
   useEffect(() => {
     fetch("/api/wilayah/provinces")
       .then((res) => res.json())
       .then(setProvinces);
   }, []);
 
-  // Fetch Regencies when province selected
+  // Fetch Regencies
   useEffect(() => {
     if (selectedProvince) {
       fetch(`/api/wilayah/regencies?province_code=${selectedProvince}`)
@@ -82,26 +89,29 @@ export function VacancyForm({
     }
   }, [selectedProvince, setValue]);
 
+  // Reset form when initialData berubah
   useEffect(() => {
     reset({
       ...initialData,
+      deadline: formatDateInput(initialData?.deadline),
       is_open: initialData?.is_open ?? true,
     });
   }, [initialData, reset]);
 
+  async function handleFormSubmit(data: CreateVacancyInput) {
+    await onSubmit(data);
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Section: Informasi Dasar */}
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+      {/* Informasi Dasar */}
       <div>
-        <h3 className="text-lg font-semibold mb-3">Informasi Dasar</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block font-medium mb-1">Title</label>
             <Input {...register("title")} disabled={loading} />
             {errors.title && (
-              <span className="text-destructive text-sm">
-                {errors.title.message}
-              </span>
+              <span className="text-destructive text-sm">{errors.title.message}</span>
             )}
           </div>
           <div>
@@ -141,91 +151,76 @@ export function VacancyForm({
         </div>
       </div>
 
-      {/* Section: Lokasi */}
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-medium mb-1">Provinsi</label>
-            <select
-              value={selectedProvince}
-              onChange={(e) => setSelectedProvince(e.target.value)}
-              className="w-full rounded border border-input bg-background py-2 px-3 text-sm shadow-sm"
-              disabled={loading}
-            >
-              <option key="prov-default" value="">
-                Pilih Provinsi
+      {/* Lokasi */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block font-medium mb-1">Provinsi</label>
+          <select
+            value={selectedProvince}
+            onChange={(e) => setSelectedProvince(e.target.value)}
+            className="w-full rounded border border-input bg-background py-2 px-3 text-sm shadow-sm"
+            disabled={loading}
+          >
+            <option value="">Pilih Provinsi</option>
+            {provinces.map((prov, idx) => (
+              <option key={idx} value={prov.code}>
+                {prov.name}
               </option>
-              {provinces.map((prov, idx) => (
-                <option
-                  key={`prov-${prov.code ?? idx}`}
-                  value={prov.code ?? ""}
-                >
-                  {prov.name ?? "Tanpa Nama"}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Kota/Kabupaten</label>
-            <select
-              {...register("location")}
-              disabled={loading || !selectedProvince}
-              className="w-full rounded border border-input bg-background py-2 px-3 text-sm shadow-sm"
-            >
-              <option key="reg-default" value="">
-                Pilih Kota/Kabupaten
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block font-medium mb-1">Kota/Kabupaten</label>
+          <select
+            {...register("location")}
+            disabled={loading || !selectedProvince}
+            className="w-full rounded border border-input bg-background py-2 px-3 text-sm shadow-sm"
+          >
+            <option value="">Pilih Kota/Kabupaten</option>
+            {regencies.map((reg) => (
+              <option key={reg.id} value={reg.name}>
+                {reg.name}
               </option>
-              {regencies.map((reg) => (
-                <option key={`reg-${reg.id}`} value={reg.id}>
-                  {reg.name}
-                </option>
-              ))}
-            </select>
-          </div>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* Section: Detail */}
-      <div>
-        <div className="space-y-4">
-          <div>
-            <label className="block font-medium mb-1">Qualification</label>
-            <Textarea
-              {...register("qualification")}
-              rows={2}
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Responsibilities</label>
-            <Textarea
-              {...register("responsibilities")}
-              rows={2}
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Benefit</label>
-            <Textarea {...register("benefit")} rows={2} disabled={loading} />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Documents</label>
-            <Textarea {...register("documents")} rows={2} disabled={loading} />
-          </div>
+      {/* Detail */}
+      <div className="space-y-4">
+        <div>
+          <label className="block font-medium mb-1">Qualification</label>
+          <Textarea {...register("qualification")} rows={2} disabled={loading} />
         </div>
-      </div>
-
-      {/* Status & Action */}
-      <div className="flex items-center justify-between">
+        <div>
+          <label className="block font-medium mb-1">Responsibilities</label>
+          <Textarea {...register("responsibilities")} rows={2} disabled={loading} />
+        </div>
+        <div>
+          <label className="block font-medium mb-1">Benefit</label>
+          <Textarea {...register("benefit")} rows={2} disabled={loading} />
+        </div>
+        <div>
+          <label className="block font-medium mb-1">Documents</label>
+          <Textarea {...register("documents")} rows={2} disabled={loading} />
+        </div>
         <div className="flex items-center gap-2">
-          <label className="font-medium">Open</label>
+          <label className="font-medium">Status</label>
           <Switch
             checked={watch("is_open")}
             onCheckedChange={(val) => setValue("is_open", val)}
+            className="data-[state=checked]:bg-[var(--switch-primary)]"
           />
         </div>
+      </div>
+
+      {/* Status & Actions */}
+      <div className="flex items-center justify-between border-t pt-4">
+        <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
+          Batal
+        </Button>
         <Button type="submit" disabled={loading}>
-          {loading ? "Saving..." : "Save"}
+          {loading ? "Saving..." : isEditMode ? "Update" : "Create"}
         </Button>
       </div>
     </form>

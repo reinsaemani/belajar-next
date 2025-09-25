@@ -7,9 +7,9 @@ import { MutationConfig } from "@/lib/react-query";
 export const createVacancySchema = z.object({
   title: z.string().min(2, "Title is required"),
   degree: z.string().min(2, "Degree is required"),
-  type: z.string(),
-  deadline: z.string().optional(),
-  location: z.string().nullable().optional(),
+  type: z.string().min(1, "Type is required"),
+  deadline: z.string().min(1, "Deadline is required"),
+  location: z.string().min(1, "Locations is required"),
   qualification: z.string().min(2, "Qualification is required"),
   responsibilities: z.string().min(2, "Responsibilities is required"),
   documents: z.string().min(2, "Documents is required"),
