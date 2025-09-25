@@ -1,6 +1,4 @@
-'use client';
-
-import { VacanciesList } from '@/features/vacancies/components/VacanciesList';
+import { VacanciesList } from "@/features/vacancies/components/VacanciesList";
 
 export default function ManageVacanciesPage() {
   return (
