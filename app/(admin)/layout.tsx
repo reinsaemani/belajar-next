@@ -1,13 +1,12 @@
-
-import { AppSidebar } from "@/components/sidebar/AppSidebar"
-import { SiteHeader } from "@/components/sidebar/SideHeader"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { Toaster } from "sonner"
+import { AppSidebar } from "@/components/sidebar/AppSidebar";
+import { SiteHeader } from "@/components/sidebar/SideHeader";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "sonner";
 
 export default function AdminLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <div>
@@ -29,5 +28,5 @@ export default function AdminLayout({
         </SidebarInset>
       </SidebarProvider>
     </div>
-  )
+  );
 }

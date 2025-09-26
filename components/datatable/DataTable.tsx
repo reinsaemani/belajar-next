@@ -47,14 +47,6 @@ export function DataTable<TData>({
 
   return (
     <div className="w-full">
-      <SearchAndAddBar
-        value={globalFilter}
-        onSearch={setGlobalFilter}
-        onAddClick={onAddClick}
-        addLabel="Add Vacancies"
-        placeholder="Search data..."
-        className="mb-4"
-      />
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -63,7 +55,7 @@ export function DataTable<TData>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-center font-extrabold text-lg bg-gray-300"
+                    className="text-center font-sans font-extrabold bg-gray-300"
                   >
                     {header.isPlaceholder
                       ? null

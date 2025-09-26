@@ -2,10 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  createVacancySchema,
-  CreateVacancyInput,
-} from "../api/create-vacancy";
+import { createVacancySchema, CreateVacancyInput } from "../api/create-vacancy";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -65,8 +62,12 @@ export function VacancyForm({
     },
   });
 
-  const [provinces, setProvinces] = useState<{ code: string; name: string }[]>([]);
-  const [regencies, setRegencies] = useState<{ id: string; name: string }[]>([]);
+  const [provinces, setProvinces] = useState<{ code: string; name: string }[]>(
+    []
+  );
+  const [regencies, setRegencies] = useState<{ id: string; name: string }[]>(
+    []
+  );
   const [selectedProvince, setSelectedProvince] = useState("");
 
   // Fetch Provinces
@@ -111,7 +112,9 @@ export function VacancyForm({
             <label className="block font-medium mb-1">Title</label>
             <Input {...register("title")} disabled={loading} />
             {errors.title && (
-              <span className="text-destructive text-sm">{errors.title.message}</span>
+              <span className="text-destructive text-sm">
+                {errors.title.message}
+              </span>
             )}
           </div>
           <div>
@@ -190,11 +193,19 @@ export function VacancyForm({
       <div className="space-y-4">
         <div>
           <label className="block font-medium mb-1">Qualification</label>
-          <Textarea {...register("qualification")} rows={2} disabled={loading} />
+          <Textarea
+            {...register("qualification")}
+            rows={2}
+            disabled={loading}
+          />
         </div>
         <div>
           <label className="block font-medium mb-1">Responsibilities</label>
-          <Textarea {...register("responsibilities")} rows={2} disabled={loading} />
+          <Textarea
+            {...register("responsibilities")}
+            rows={2}
+            disabled={loading}
+          />
         </div>
         <div>
           <label className="block font-medium mb-1">Benefit</label>
@@ -216,10 +227,15 @@ export function VacancyForm({
 
       {/* Status & Actions */}
       <div className="flex items-center justify-between border-t pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={loading}
+        >
           Batal
         </Button>
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading} className="bg-blue-500">
           {loading ? "Saving..." : isEditMode ? "Update" : "Create"}
         </Button>
       </div>

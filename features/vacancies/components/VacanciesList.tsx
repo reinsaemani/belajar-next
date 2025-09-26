@@ -19,8 +19,9 @@ import React from "react";
 import { toast } from "sonner";
 import { VacancyAddEditModal } from "./VacanciesAddEditModal";
 import { DeleteVacancy } from "./VacanciesDelete";
+import { SearchAndAddBar } from "@/components/SearchAndAddBar";
 
-export const VacanciesList = () => {
+export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({}) => {
   const [viewOpen, setViewOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -40,8 +41,7 @@ export const VacanciesList = () => {
     setEditData(row);
     setModalOpen(true);
   }
-
-
+  const [globalFilter, setGlobalFilter] = React.useState("");
   const vacanciesQuery = useVacancies();
 
   const columns: ColumnDef<Vacancy>[] = [
@@ -50,6 +50,13 @@ export const VacanciesList = () => {
       header: "Title",
       cell: ({ getValue }) => (
         <span className="font-medium">{getValue<string>()}</span>
+      ),
+    },
+    {
+      accessorKey: "location",
+      header: () => <div className="text-center">Location</div>,
+      cell: ({ getValue }) => (
+        <span className="block text-center">{getValue<string>()}</span>
       ),
     },
     {
@@ -114,6 +121,14 @@ export const VacanciesList = () => {
 
   return (
     <>
+      <SearchAndAddBar
+        value={globalFilter}
+        onSearch={setGlobalFilter}
+        onAddClick={handleAdd}
+        addLabel="Add Data"
+        placeholder="Search data..."
+        className="mb-4"
+      />
       <DataTable<Vacancy>
         data={vacancies}
         columns={columns}
