@@ -5,42 +5,47 @@ import { Eye, Download } from "lucide-react";
 
 type Props = { applicant: Applicant };
 
-// Helper: map file labels and paths
-function getFiles(
-  user: any
-): Array<{ label: string; filename: string; url: string }> {
-  const files = [];
-  const base = "/uploads/pelamar/"; // Change according to your storage
+function getFiles(user: any): Array<{
+  label: string;
+  filename?: string;
+  url?: string;
+}> {
+  const base = process.env.NEXT_PUBLIC_API_URL + "/uploads/applicants/";
 
-  if (user.documents_files) {
-    if (user.documents_files.cv_path)
-      files.push({
-        label: "CV",
-        filename: user.documents_files.cv_path,
-        url: base + user.documents_files.cv_path,
-      });
-    if (user.documents_files.id_card_path)
-      files.push({
-        label: "ID Card",
-        filename: user.documents_files.id_card_path,
-        url: base + user.documents_files.id_card_path,
-      });
-    if (user.documents_files.certificate_path)
-      files.push({
-        label: "Certificate",
-        filename: user.documents_files.certificate_path,
-        url: base + user.documents_files.certificate_path,
-      });
-    if (user.documents_files.photo_path)
-      files.push({
-        label: "Photo",
-        filename: user.documents_files.photo_path,
-        url: base + user.documents_files.photo_path,
-      });
-  }
-  return files;
+  const safe = (path?: string | null) =>
+    path && path.trim().length > 0 ? path : undefined;
+
+  return [
+    {
+      label: "CV",
+      filename: safe(user.documents_files?.cv_path),
+      url: safe(user.documents_files?.cv_path)
+        ? base + user.documents_files.cv_path
+        : undefined,
+    },
+    {
+      label: "ID Card",
+      filename: safe(user.documents_files?.id_card_path),
+      url: safe(user.documents_files?.id_card_path)
+        ? base + user.documents_files.id_card_path
+        : undefined,
+    },
+    {
+      label: "Certificate",
+      filename: safe(user.documents_files?.certificate_path),
+      url: safe(user.documents_files?.certificate_path)
+        ? base + user.documents_files.certificate_path
+        : undefined,
+    },
+    {
+      label: "Photo",
+      filename: safe(user.documents_files?.photo_path),
+      url: safe(user.documents_files?.photo_path)
+        ? base + user.documents_files.photo_path
+        : undefined,
+    },
+  ];
 }
-
 export function ApplicantDetail({ applicant }: Props) {
   const { user, vacancy, created_at } = applicant;
   const files = getFiles(user);
@@ -48,6 +53,8 @@ export function ApplicantDetail({ applicant }: Props) {
   return (
     <div className="bg-white rounded-xl shadow mx-auto p-8">
       <h2 className="text-2xl font-bold mb-6">Applicant Preview</h2>
+
+      {/* === Applicant Info === */}
       <div className="bg-gray-50 rounded-lg overflow-hidden mb-6">
         <table className="w-full">
           <tbody>
@@ -57,11 +64,10 @@ export function ApplicantDetail({ applicant }: Props) {
             <DetailRow label="NIK" value={user.NIK} />
             <DetailRow
               label="Birth Place, Date"
-              value={`${user.place_of_birth ?? "-"}, ${
-                user.date_of_birth
-                  ? new Date(user.date_of_birth).toLocaleDateString("en-GB")
-                  : "-"
-              }`}
+              value={`${user.place_of_birth ?? "-"}, ${user.date_of_birth
+                ? new Date(user.date_of_birth).toLocaleDateString("en-GB")
+                : "-"
+                }`}
             />
             <DetailRow label="Address" value={user.address} />
             <DetailRow
@@ -88,39 +94,44 @@ export function ApplicantDetail({ applicant }: Props) {
         </table>
       </div>
 
-      {/* Files/Documents */}
-      {files.length > 0 && (
-        <div className="flex flex-col gap-3">
-          {files.map((file, idx) => (
-            <div
-              key={idx}
-              className="bg-white border rounded-lg p-4 flex items-center gap-4"
-            >
-              <div className="flex-1">
-                <div className="font-bold">{file.label}</div>
-                <div className="text-sm text-gray-600">{file.filename}</div>
+      {/* === Files/Documents === */}
+      <div className="flex flex-col gap-3">
+        {files.map((file, idx) => (
+          <div
+            key={idx}
+            className="bg-white border rounded-lg p-4 flex items-center gap-4"
+          >
+            <div className="flex-1">
+              <div className="font-bold">{file.label}</div>
+              <div className="text-sm text-gray-600">
+                {file.filename ? file.filename : `${file.label} not found`}
               </div>
-              <a
-                href={file.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
-              >
-                <Eye className="w-4 h-4" />
-                Preview
-              </a>
-              <a
-                href={file.url}
-                download
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Download
-              </a>
             </div>
-          ))}
-        </div>
-      )}
+
+            {file.url && (
+              <>
+                <a
+                  href={file.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <Eye className="w-4 h-4" />
+                  Preview
+                </a>
+                <a
+                  href={file.url}
+                  download
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </a>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

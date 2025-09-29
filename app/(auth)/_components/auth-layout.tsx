@@ -29,14 +29,6 @@ export const AuthLayout = ({ children }: LayoutProps) => {
     }
   }, [user, isLoading, router, redirectTo]);
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Spinner size="xl" />
-      </div>
-    );
-  }
-
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Left Side (Form) */}

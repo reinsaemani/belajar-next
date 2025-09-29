@@ -21,11 +21,13 @@ import { VacancyAddEditModal } from "./VacanciesAddEditModal";
 import { DeleteVacancy } from "./VacanciesDelete";
 import { SearchAndAddBar } from "@/components/SearchAndAddBar";
 
-export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({}) => {
+export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({ }) => {
   const [viewOpen, setViewOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [editData, setEditData] = React.useState<Partial<Vacancy> | null>(null);
+
+
 
   function handleView(row: Vacancy) {
     setSelectedId(row.vacancies_id);
@@ -43,6 +45,21 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({}) => {
   }
   const [globalFilter, setGlobalFilter] = React.useState("");
   const vacanciesQuery = useVacancies();
+
+  const vacancies = vacanciesQuery.data?.data ?? [];
+
+  const filteredVacancies = React.useMemo(() => {
+    if (!globalFilter) return vacancies;
+
+    const filter = globalFilter.toLowerCase();
+
+    return vacancies.filter((v) =>
+      (v.title || "").toLowerCase().includes(filter) ||
+      (v.location || "").toLowerCase().includes(filter) ||
+      (v.type || "").toLowerCase().includes(filter) ||
+      (v.degree || "").toLowerCase().includes(filter)
+    );
+  }, [vacancies, globalFilter]);
 
   const columns: ColumnDef<Vacancy>[] = [
     {
@@ -116,8 +133,6 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({}) => {
     return <SkeletonTable columns={columns.length} rows={5} />;
   }
 
-  const vacancies = vacanciesQuery.data?.data;
-  if (!vacancies) return null;
 
   return (
     <>
@@ -130,7 +145,7 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({}) => {
         className="mb-4"
       />
       <DataTable<Vacancy>
-        data={vacancies}
+        data={filteredVacancies}
         columns={columns}
         onAddClick={handleAdd}
         addLabel="Add Vacancies"

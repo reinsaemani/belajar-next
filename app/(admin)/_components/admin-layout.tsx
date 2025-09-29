@@ -9,6 +9,7 @@ import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { SiteHeader } from "@/components/sidebar/SideHeader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 export const AdminLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
@@ -20,7 +21,7 @@ export const AdminLayout = ({ children }: { children: ReactNode }) => {
 
     if (!user) {
       // belum login
-      router.replace(paths.auth.login.getHref(pathname));
+      router.replace(paths.auth.login.getHref());
       return;
     }
 
@@ -33,7 +34,7 @@ export const AdminLayout = ({ children }: { children: ReactNode }) => {
   if (isLoading || !user) {
     return (
       <div className="flex h-screen items-center justify-center">
-        Loading...
+        <Spinner size="xl" />
       </div>
     );
   }

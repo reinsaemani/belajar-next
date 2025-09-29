@@ -33,7 +33,7 @@ export type User = Entity<{
   full_name: string;
   gender: "MALE" | "FEMALE" | null;
   place_of_birth: string | null;
-  date_of_birth: string | null; // biasanya Date, bisa string juga kalau dari API
+  date_of_birth: string | null;
   documents_files_id: number | null;
   phone_number: string | null;
   email: string | null;
@@ -51,8 +51,8 @@ export type User = Entity<{
   work_experience: string | null;
   banned_until: string | null;
   personality_test_url: string | null;
-  created_at: string; // or Date
-  updated_at: string; // or Date
+  created_at: string;
+  updated_at: string;
 }>;
 
 export type ApplicantsDetails = Entity<{
@@ -82,7 +82,6 @@ export type Applicant = Entity<{
     | "REJECTED";
   created_at: string;
   updated_at: string;
-  // Relasi:
   user: User;
   vacancy: Vacancy;
   details?: ApplicantsDetails[];

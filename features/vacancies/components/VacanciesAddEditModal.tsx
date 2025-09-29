@@ -25,13 +25,14 @@ export function VacancyAddEditModal({ open, onOpenChange, initialData, mode }: P
 
   const createMutation = useCreateVacancy({
     mutationConfig: {
-      onSuccess: () => toast.success(`${mode === "add" ? "Created" : "Updated"} vacancy successfully`),
+      onSuccess: () =>
+        toast.success(`${mode === "add" ? "Created" : "Updated"} vacancy successfully`),
       onError: () => toast.error("Failed to save vacancy"),
     },
   });
+  const [hasError, setHasError] = React.useState(false);
 
 
-  // konversi null → undefined
   const normalizedData: Partial<CreateVacancyInput> | undefined = initialData
     ? {
       ...initialData,
@@ -56,14 +57,20 @@ export function VacancyAddEditModal({ open, onOpenChange, initialData, mode }: P
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
-          <DialogTitle>{mode === "add" ? "Add Vacancy" : "Edit Vacancy"}</DialogTitle>
+      <DialogContent
+        className={`w-full max-w-[95vw] sm:max-w-4xl p-6 overflow-y-auto ${hasError ? "max-h-[90vh]" : "h-auto"
+          }`}
+      >
+        <DialogHeader className="border-b pb-3 mb-4">
+          <DialogTitle>{mode === "edit" ? "Edit Vacancy" : "Create Vacancy"}</DialogTitle>
         </DialogHeader>
+
         <VacancyForm
           initialData={normalizedData}
           onSubmit={handleSubmit}
           onCancel={() => onOpenChange(false)}
+          loading={createMutation.isPending || updateMutation.isPending}
+          onErrorChange={setHasError} // <-- ini akan update hasError setiap ada error
         />
       </DialogContent>
     </Dialog>

@@ -28,9 +28,6 @@ export function LoginForm({
     >
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
-        <p className="text-muted-foreground text-sm text-balance">
-          Enter your username and password
-        </p>
       </div>
       <div className="grid gap-6">
         <div className="grid gap-3">
@@ -61,7 +58,7 @@ export function LoginForm({
           <span className="text-sm text-red-500">{errorMessage}</span>
         )}
 
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full bg-pink-500 hover:bg-pink-400">
           Login
         </Button>
       </div>

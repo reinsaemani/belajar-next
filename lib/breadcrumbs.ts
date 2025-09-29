@@ -16,11 +16,24 @@ export function findBreadcrumbPath(
 ): Crumb[] | null {
   for (const item of items) {
     const current = [...path, { label: item.title, href: item.url }];
-    if (item.url === url) return current;
+
+    // ✅ kalau persis match → return
+    if (item.url === url) {
+      return current;
+    }
+
+    // ✅ kalau punya anak → cari di dalam dulu
     if (item.items) {
       const found = findBreadcrumbPath(item.items, url, current);
       if (found) return found;
     }
+
+    // ✅ kalau bukan persis match tapi masih prefix (nested detail)
+    if (url.startsWith(item.url + "/")) {
+      return current;
+    }
   }
   return null;
 }
+
+

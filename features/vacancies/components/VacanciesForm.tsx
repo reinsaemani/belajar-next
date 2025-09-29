@@ -27,6 +27,7 @@ type VacancyFormProps = {
   onSubmit: (data: CreateVacancyInput) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
+  onErrorChange?: (hasError: boolean) => void;
 };
 
 function formatDateInput(date?: string | Date) {
@@ -43,6 +44,7 @@ export function VacancyForm({
   onSubmit,
   onCancel,
   loading,
+  onErrorChange,
 }: VacancyFormProps) {
   const isEditMode = !!initialData?.title;
 
@@ -62,6 +64,7 @@ export function VacancyForm({
     },
   });
 
+
   const [provinces, setProvinces] = useState<{ code: string; name: string }[]>(
     []
   );
@@ -70,9 +73,17 @@ export function VacancyForm({
   );
   const [selectedProvince, setSelectedProvince] = useState("");
 
+
+  useEffect(() => {
+    if (onErrorChange) {
+      const hasError = Object.keys(errors).length > 0;
+      onErrorChange(hasError);
+    }
+  }, [errors, onErrorChange]);
+
   // Fetch Provinces
   useEffect(() => {
-    fetch("/api/wilayah/provinces")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/region/provinces`)
       .then((res) => res.json())
       .then(setProvinces);
   }, []);
@@ -80,7 +91,7 @@ export function VacancyForm({
   // Fetch Regencies
   useEffect(() => {
     if (selectedProvince) {
-      fetch(`/api/wilayah/regencies?province_code=${selectedProvince}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/region/regencies/${selectedProvince}`)
         .then((res) => res.json())
         .then(setRegencies);
       setValue("location", "");
@@ -99,122 +110,158 @@ export function VacancyForm({
     });
   }, [initialData, reset]);
 
+
   async function handleFormSubmit(data: CreateVacancyInput) {
     await onSubmit(data);
   }
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
-      {/* Informasi Dasar */}
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* === Kolom kiri: Title & Deadline === */}
+        <div className="space-y-4">
+          {/* Title */}
+          <div className="w-full">
             <label className="block font-medium mb-1">Title</label>
-            <Input {...register("title")} disabled={loading} />
+            <Input
+              {...register("title")}
+              disabled={loading}
+              className="w-full"
+              placeholder="Software Engineer"
+            />
             {errors.title && (
-              <span className="text-destructive text-sm">
-                {errors.title.message}
-              </span>
+              <span className="text-destructive text-sm">{errors.title.message}</span>
             )}
           </div>
-          <div>
+
+          {/* Deadline */}
+          <div className="w-full">
             <label className="block font-medium mb-1">Deadline</label>
-            <Input type="date" {...register("deadline")} disabled={loading} />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Degree</label>
-            <select
-              {...register("degree")}
+            <Input
+              type="date"
+              {...register("deadline")}
               disabled={loading}
+              className="w-full"
+            />
+            {errors.deadline && (
+              <span className="text-destructive text-sm">{errors.deadline.message}</span>
+            )}
+          </div>
+        </div>
+
+        {/* === Kolom kanan: Province & City/Regency === */}
+        <div className="space-y-4">
+          {/* Province */}
+          <div className="w-full">
+            <label className="block font-medium mb-1">Province</label>
+            <select
+              value={selectedProvince}
+              onChange={(e) => setSelectedProvince(e.target.value)}
               className="w-full rounded border border-input bg-background py-2 px-3 text-sm shadow-sm"
+              disabled={loading}
             >
-              <option value="">Pilih Degree</option>
-              {VACANCY_DEGREES.map((deg) => (
-                <option key={deg.value} value={deg.value}>
-                  {deg.label}
+              <option value="">Select Province</option>
+              {provinces.map((prov) => (
+                <option key={prov.code} value={prov.code}>
+                  {prov.name}
                 </option>
               ))}
             </select>
           </div>
-          <div>
-            <label className="block font-medium mb-1">Type</label>
+
+          {/* City / Regency */}
+          <div className="w-full">
+            <label className="block font-medium mb-1">City/Regency</label>
             <select
-              {...register("type")}
-              disabled={loading}
+              {...register("location")}
+              disabled={loading || !selectedProvince}
               className="w-full rounded border border-input bg-background py-2 px-3 text-sm shadow-sm"
             >
-              <option value="">Pilih Type</option>
-              {VACANCY_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.label}
+              <option value="">Select City/Regency</option>
+              {regencies.map((reg) => (
+                <option key={reg.id} value={reg.name}>
+                  {reg.name}
                 </option>
               ))}
             </select>
+            {errors.location && (
+              <span className="text-destructive text-sm">{errors.location.message}</span>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Lokasi */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block font-medium mb-1">Provinsi</label>
+      {/* === Degree + Type berdampingan === */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        {/* Degree */}
+        <div className="w-full">
+          <label className="block font-medium mb-1">Degree</label>
           <select
-            value={selectedProvince}
-            onChange={(e) => setSelectedProvince(e.target.value)}
-            className="w-full rounded border border-input bg-background py-2 px-3 text-sm shadow-sm"
+            {...register("degree")}
             disabled={loading}
-          >
-            <option value="">Pilih Provinsi</option>
-            {provinces.map((prov, idx) => (
-              <option key={idx} value={prov.code}>
-                {prov.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block font-medium mb-1">Kota/Kabupaten</label>
-          <select
-            {...register("location")}
-            disabled={loading || !selectedProvince}
             className="w-full rounded border border-input bg-background py-2 px-3 text-sm shadow-sm"
           >
-            <option value="">Pilih Kota/Kabupaten</option>
-            {regencies.map((reg) => (
-              <option key={reg.id} value={reg.name}>
-                {reg.name}
+            <option value="">Pilih Degree</option>
+            {VACANCY_DEGREES.map((deg) => (
+              <option key={deg.value} value={deg.value}>
+                {deg.label}
               </option>
             ))}
           </select>
+          {errors.degree && (
+            <span className="text-destructive text-sm">{errors.degree.message}</span>
+          )}
+        </div>
+
+        {/* Type */}
+        <div className="w-full">
+          <label className="block font-medium mb-1">Type</label>
+          <select
+            {...register("type")}
+            disabled={loading}
+            className="w-full rounded border border-input bg-background py-2 px-3 text-sm shadow-sm"
+          >
+            <option value="">Pilih Type</option>
+            {VACANCY_TYPES.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+          {errors.type && (
+            <span className="text-destructive text-sm">{errors.type.message}</span>
+          )}
         </div>
       </div>
 
-      {/* Detail */}
+
+
+      {/* === Detail (full width) === */}
       <div className="space-y-4">
-        <div>
+        <div className="w-full">
           <label className="block font-medium mb-1">Qualification</label>
-          <Textarea
-            {...register("qualification")}
-            rows={2}
-            disabled={loading}
-          />
+          <Textarea {...register("qualification")} rows={2} disabled={loading} className="w-full" />
+          {errors.qualification && <span className="text-destructive text-sm">{errors.qualification.message}</span>}
         </div>
-        <div>
+
+        <div className="w-full">
           <label className="block font-medium mb-1">Responsibilities</label>
-          <Textarea
-            {...register("responsibilities")}
-            rows={2}
-            disabled={loading}
-          />
+          <Textarea {...register("responsibilities")} rows={2} disabled={loading} className="w-full" />
+          {errors.responsibilities && <span className="text-destructive text-sm">{errors.responsibilities.message}</span>}
         </div>
-        <div>
+
+        <div className="w-full">
           <label className="block font-medium mb-1">Benefit</label>
-          <Textarea {...register("benefit")} rows={2} disabled={loading} />
+          <Textarea {...register("benefit")} rows={2} disabled={loading} className="w-full" />
+          {errors.benefit && <span className="text-destructive text-sm">{errors.benefit.message}</span>}
         </div>
-        <div>
+
+        <div className="w-full">
           <label className="block font-medium mb-1">Documents</label>
-          <Textarea {...register("documents")} rows={2} disabled={loading} />
+          <Textarea {...register("documents")} rows={2} disabled={loading} className="w-full" />
+          {errors.documents && <span className="text-destructive text-sm">{errors.documents.message}</span>}
         </div>
+
         <div className="flex items-center gap-2">
           <label className="font-medium">Status</label>
           <Switch
@@ -225,20 +272,17 @@ export function VacancyForm({
         </div>
       </div>
 
-      {/* Status & Actions */}
-      <div className="flex items-center justify-between border-t pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={loading}
-        >
+      {/* === Footer: Buttons === */}
+      <div className="flex justify-between gap-3 border-t pt-4">
+        <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
           Batal
         </Button>
-        <Button type="submit" disabled={loading} className="bg-blue-500">
+        <Button type="submit" disabled={loading} className="bg-pink-500 hover:bg-pink-400">
           {loading ? "Saving..." : isEditMode ? "Update" : "Create"}
         </Button>
       </div>
     </form>
+
+
   );
 }

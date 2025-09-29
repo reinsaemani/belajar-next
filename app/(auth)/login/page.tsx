@@ -20,7 +20,6 @@ export default function LoginPage() {
       }
     },
     onError: (msg) => {
-      // tampilkan di UI, bukan console
       setErrorMessage(msg);
     },
   });

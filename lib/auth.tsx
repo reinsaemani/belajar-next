@@ -22,7 +22,7 @@ export const useUser = () =>
   useQuery({
     queryKey: userQueryKey,
     queryFn: getUser,
-    initialData: null,
+    retry: false,
   });
 
 export const useLogin = ({
@@ -68,7 +68,6 @@ export const loginInputSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginInputSchema>;
 
-// BE return { success, data: Account }
 const loginWithUsernameAndPassword = (
   data: LoginInput
 ): Promise<{ success: boolean; data: Account }> => {

@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 type Crumb = {
   label: string;
@@ -17,12 +18,12 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
         {items.map((item, idx) => (
           <li key={item.href ?? item.label} className="flex items-center">
             {item.href ? (
-              <a
+              <Link
                 href={item.href}
                 className="text-muted-foreground hover:underline"
               >
                 {item.label}
-              </a>
+              </Link>
             ) : (
               <span className="font-semibold text-foreground">
                 {item.label}

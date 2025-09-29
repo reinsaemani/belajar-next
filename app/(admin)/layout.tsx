@@ -3,6 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import { AdminLayout as AdminLayoutComponent } from "./_components/admin-layout";
 import { Spinner } from "@/components/ui/spinner";
+import { MainErrorFallback } from "@/components/errors/main";
 
 export const metadata = {
   title: "Waleta Admin",
@@ -18,7 +19,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         </div>
       }
     >
-      <ErrorBoundary fallback={<div>Something went wrong!</div>}>
+      <ErrorBoundary fallback={<MainErrorFallback />}>
         <AdminLayoutComponent>{children}</AdminLayoutComponent>
       </ErrorBoundary>
     </Suspense>
