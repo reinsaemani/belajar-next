@@ -22,6 +22,7 @@ export const paths = {
       },
       allApplicants: {
         getHref: () => "/applicants/all-applicants",
+        getHrefById: (id: string | number) => `/applicants/all-applicants/${id}`,
       },
       recruitmentStages: {
         getHref: () => "/recruitment-stages",

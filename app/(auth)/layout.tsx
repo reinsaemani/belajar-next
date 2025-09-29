@@ -1,8 +1,8 @@
 import { ReactNode, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Spinner } from "@/components/ui/spinner";
 
 import { AuthLayout as AuthLayoutComponent } from "./_components/auth-layout";
+import { MainErrorFallback } from "@/components/errors/main";
 
 export const metadata = {
   title: "Waleta Admin Login",
@@ -11,14 +11,8 @@ export const metadata = {
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <Suspense
-      fallback={
-        <div className="flex size-full items-center justify-center">
-          <Spinner size="xl" />
-        </div>
-      }
-    >
-      <ErrorBoundary fallback={<div>Something went wrong!</div>}>
+    <Suspense fallback={null}>
+      <ErrorBoundary fallback={<MainErrorFallback />}>
         <AuthLayoutComponent>{children}</AuthLayoutComponent>
       </ErrorBoundary>
     </Suspense>

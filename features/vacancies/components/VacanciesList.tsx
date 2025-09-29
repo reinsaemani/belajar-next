@@ -26,33 +26,14 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({ }) => {
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [editData, setEditData] = React.useState<Partial<Vacancy> | null>(null);
-
-
-
-  function handleView(row: Vacancy) {
-    setSelectedId(row.vacancies_id);
-    setViewOpen(true);
-  }
-
-  function handleAdd() {
-    setEditData(null);
-    setModalOpen(true);
-  }
-
-  function handleEdit(row: Vacancy) {
-    setEditData(row);
-    setModalOpen(true);
-  }
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const vacanciesQuery = useVacancies();
 
+  const vacanciesQuery = useVacancies();
   const vacancies = vacanciesQuery.data?.data ?? [];
 
   const filteredVacancies = React.useMemo(() => {
     if (!globalFilter) return vacancies;
-
     const filter = globalFilter.toLowerCase();
-
     return vacancies.filter((v) =>
       (v.title || "").toLowerCase().includes(filter) ||
       (v.location || "").toLowerCase().includes(filter) ||
@@ -61,36 +42,41 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({ }) => {
     );
   }, [vacancies, globalFilter]);
 
+  const handleView = (row: Vacancy) => {
+    setSelectedId(row.vacancies_id);
+    setViewOpen(true);
+  };
+
+  const handleAdd = () => {
+    setEditData(null);
+    setModalOpen(true);
+  };
+
+  const handleEdit = (row: Vacancy) => {
+    setEditData(row);
+    setModalOpen(true);
+  };
+
   const columns: ColumnDef<Vacancy>[] = [
     {
       accessorKey: "title",
       header: "Title",
-      cell: ({ getValue }) => (
-        <span className="font-medium">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="font-medium">{getValue<string>()}</span>,
     },
     {
       accessorKey: "location",
       header: () => <div className="text-center">Location</div>,
-      cell: ({ getValue }) => (
-        <span className="block text-center">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="block text-center">{getValue<string>()}</span>,
     },
     {
       accessorKey: "type",
       header: () => <div className="text-center">Type</div>,
-      cell: ({ getValue }) => (
-        <span className="block text-center">
-          {formatType(getValue<string>())}
-        </span>
-      ),
+      cell: ({ getValue }) => <span className="block text-center">{formatType(getValue<string>())}</span>,
     },
     {
       accessorKey: "degree",
       header: () => <div className="text-center">Degree</div>,
-      cell: ({ getValue }) => (
-        <span className="block text-center">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="block text-center">{getValue<string>()}</span>,
     },
     {
       accessorKey: "deadline",
@@ -109,10 +95,7 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({ }) => {
       header: () => <div className="text-center">Status</div>,
       cell: ({ row }) => (
         <div className="flex justify-center">
-          <VacancyStatusSwitch
-            id={row.original.vacancies_id}
-            checked={row.original.is_open}
-          />
+          <VacancyStatusSwitch id={row.original.vacancies_id} checked={row.original.is_open} />
         </div>
       ),
     },
@@ -129,10 +112,21 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({ }) => {
     },
   ];
 
+  // === Skeleton Full State ===
   if (vacanciesQuery.isLoading) {
-    return <SkeletonTable columns={columns.length} rows={5} />;
-  }
+    return (
+      <div className="space-y-4 animate-pulse">
+        {/* Skeleton Search & Add */}
+        <div className="flex items-center gap-2">
+          <div className="h-10 w-1/3 bg-gray-200 rounded"></div>
+          <div className="h-10 w-24 bg-gray-200 rounded"></div>
+        </div>
 
+        {/* Skeleton Table */}
+        <SkeletonTable columns={columns.length} rows={5} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -144,6 +138,7 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({ }) => {
         placeholder="Search data..."
         className="mb-4"
       />
+
       <DataTable<Vacancy>
         data={filteredVacancies}
         columns={columns}
@@ -155,11 +150,17 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({ }) => {
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold">
-              Vacancy Detail
-            </DialogTitle>
+            <DialogTitle className="text-lg font-bold">Vacancy Detail</DialogTitle>
           </DialogHeader>
-          {selectedId && <VacancyView vacancyId={selectedId} />}
+          {selectedId ? (
+            <VacancyView vacancyId={selectedId} />
+          ) : (
+            <div className="animate-pulse space-y-2">
+              <div className="h-6 w-1/3 bg-gray-200 rounded"></div>
+              <div className="h-4 w-full bg-gray-200 rounded"></div>
+              <div className="h-4 w-full bg-gray-200 rounded"></div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 

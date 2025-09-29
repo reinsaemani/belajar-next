@@ -4,7 +4,7 @@ import { ApplicantDetail } from "@/features/applicants/components/all-applicants
 export default async function ApplicantDetailPage(props: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await props.params; // ⬅️ params harus di-await
+  const { id } = await props.params;
   const applicant = await getApplicant({ applicantId: id });
 
   if (!applicant) return <div>Applicant not found.</div>;

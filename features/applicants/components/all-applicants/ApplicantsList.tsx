@@ -4,16 +4,6 @@ import { DataTable } from "@/components/datatable/DataTable";
 import { SkeletonTable } from "@/components/skeleton/SkeletonTable";
 import { Applicant, Vacancy } from "@/types/api";
 import { ColumnDef } from "@tanstack/react-table";
-import { TableActions } from "@/components/datatable/TableActions";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import React from "react";
-import { useAllApplicants } from "../../api/all-applicants/get-all-applicants";
-import { isWithinInterval, parseISO } from "date-fns";
 import { FilterBar } from "@/components/datatable/DataTableFilterSearchDate";
 import {
   DropdownMenu,
@@ -25,29 +15,23 @@ import {
 import { Eye, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { paths } from "@/config/paths";
+import React from "react";
+import { useAllApplicants } from "../../api/all-applicants/get-all-applicants";
+import { isWithinInterval, parseISO } from "date-fns";
 
 export const AllApplicantsList = () => {
-  const [viewOpen, setViewOpen] = React.useState(false);
-  const [selectedId, setSelectedId] = React.useState<number | null>(null);
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [editData, setEditData] = React.useState<Partial<Vacancy> | null>(null);
+  const [isNavigating, setIsNavigating] = React.useState(false);
   const router = useRouter();
 
-  // FILTER STATE
-  const [search, setSearch] = React.useState("");
-  const [dateRange, setDateRange] = React.useState<{
-    from: Date | null;
-    to: Date | null;
-  }>({ from: null, to: null });
+  const handleView = (id: number) => {
+    setIsNavigating(true);
+    router.push(paths.app.applicants.allApplicants.getHrefById(id));
+  };
 
-  function handleAdd() {
-    setEditData(null);
-    setModalOpen(true);
-  }
-  function handleEdit(row: Vacancy) {
-    setEditData(row);
-    setModalOpen(true);
-  }
+  const [search, setSearch] = React.useState("");
+  const [dateRange, setDateRange] = React.useState<{ from: Date | null; to: Date | null }>({ from: null, to: null });
+
   function handleReset() {
     setSearch("");
     setDateRange({ from: null, to: null });
@@ -59,51 +43,37 @@ export const AllApplicantsList = () => {
     {
       header: "Name",
       accessorFn: (row) => row.user.full_name,
-      cell: ({ getValue }) => (
-        <span className="font-medium">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="font-medium">{getValue<string>()}</span>,
     },
     {
       header: "Gender",
       accessorFn: (row) => row.user.gender,
-      cell: ({ getValue }) => (
-        <span className="block text-center">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="block text-center">{getValue<string>()}</span>,
     },
     {
       header: "Email",
       accessorFn: (row) => row.user.email,
-      cell: ({ getValue }) => (
-        <span className="block text-center">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="block text-center">{getValue<string>()}</span>,
     },
     {
       header: "Position",
       accessorFn: (row) => row.vacancy.title,
-      cell: ({ getValue }) => (
-        <span className="block text-center">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="block text-center">{getValue<string>()}</span>,
     },
     {
       header: "Education Level",
       accessorFn: (row) => row.user.educational_level,
-      cell: ({ getValue }) => (
-        <span className="block text-center">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="block text-center">{getValue<string>()}</span>,
     },
     {
       header: "Field of Study",
       accessorFn: (row) => row.user.study_program,
-      cell: ({ getValue }) => (
-        <span className="block text-center">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="block text-center">{getValue<string>()}</span>,
     },
     {
       header: "Work Experience",
       accessorFn: (row) => row.user.work_experience,
-      cell: ({ getValue }) => (
-        <span className="block text-center">{getValue<string>()}</span>
-      ),
+      cell: ({ getValue }) => <span className="block text-center">{getValue<string>()}</span>,
     },
     {
       id: "actions",
@@ -118,14 +88,7 @@ export const AllApplicantsList = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel className="font-bold">Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => {
-                // GANTI "applicants_id" jika nama field primary key beda
-                router.push(
-                  `/applicants/all-applicants/${row.original.applicants_id}`
-                );
-              }}
-            >
+            <DropdownMenuItem onClick={() => handleView(row.original.applicants_id)}>
               <Eye className="w-4 h-4 mr-2" /> View
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -165,7 +128,8 @@ export const AllApplicantsList = () => {
     });
   }, [allApplicants, search, dateRange]);
 
-  if (AllApplicantsQuery.isLoading) {
+  // === Skeleton ketika loading atau navigasi ===
+  if (AllApplicantsQuery.isLoading || isNavigating) {
     return <SkeletonTable columns={columns.length} rows={10} />;
   }
 
