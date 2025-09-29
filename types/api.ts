@@ -87,3 +87,14 @@ export type Applicant = Entity<{
   vacancy: Vacancy;
   details?: ApplicantsDetails[];
 }>;
+
+export type Account = {
+  account_id: number;
+  username: string;
+  role: "ADMIN" | "PENGAWAS";
+};
+
+export type AuthResponse = {
+  jwt: string;
+  user: Account;
+};

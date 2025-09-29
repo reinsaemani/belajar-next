@@ -1,15 +1,15 @@
 import { ReactNode, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-
-import { AdminLayout as AdminLayoutComponent } from "./_components/admin-layout";
 import { Spinner } from "@/components/ui/spinner";
 
+import { AuthLayout as AuthLayoutComponent } from "./_components/auth-layout";
+
 export const metadata = {
-  title: "Waleta Admin",
-  description: "Admin Dashboard",
+  title: "Waleta Admin Login",
+  description: "Login to Waleta Admin Dashboard",
 };
 
-const AdminLayout = ({ children }: { children: ReactNode }) => {
+const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
     <Suspense
       fallback={
@@ -19,10 +19,10 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       }
     >
       <ErrorBoundary fallback={<div>Something went wrong!</div>}>
-        <AdminLayoutComponent>{children}</AdminLayoutComponent>
+        <AuthLayoutComponent>{children}</AuthLayoutComponent>
       </ErrorBoundary>
     </Suspense>
   );
 };
 
-export default AdminLayout;
+export default AuthLayout;

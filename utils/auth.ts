@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 
 export const AUTH_TOKEN_COOKIE_NAME = "jwt";
 
-// 🚀 gunakan async function
 export const getAuthTokenCookie = async () => {
   if (typeof window !== "undefined") return "";
   const cookieStore = await cookies();
