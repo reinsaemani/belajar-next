@@ -3,8 +3,8 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { paths } from "@/config/paths";
 import { useLogin } from "@/lib/auth";
-import { LoginForm } from "@/features/auth/components/login-form";
 import { useState } from "react";
+import { LoginForm } from "@/features/auth/components/login-form";
 
 export default function LoginPage() {
   const router = useRouter();

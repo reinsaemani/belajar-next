@@ -1,11 +1,12 @@
 import { StageDetail } from "@/features/applicants/components/recruitment-stages/StageDetail";
 
-export default function RecruitmentStageDetailPage({
+export default async function RecruitmentStageDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const applicantsId = Number(params.id);
+  const { id } = await params; // ⬅️ params harus di-await
+  const applicantsId = Number(id);
 
   return (
     <section className="p-4 bg-white rounded-xl shadow mx-auto">

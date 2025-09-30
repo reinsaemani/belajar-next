@@ -6,6 +6,12 @@ import {
   SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 
+type SidebarSubItemType = {
+  title: string;
+  url: string;
+  icon?: React.ComponentType<any>;
+};
+
 export default function SidebarSubItem({
   subItem,
   idx,
@@ -14,7 +20,7 @@ export default function SidebarSubItem({
   isMobile,
   setOpenMobile,
 }: {
-  subItem: any;
+  subItem: SidebarSubItemType;
   idx: number;
   parentUrl: string;
   pathname: string;
@@ -22,12 +28,13 @@ export default function SidebarSubItem({
   setOpenMobile: (open: boolean) => void;
 }) {
   const isActive =
-    pathname === subItem.url || (pathname === parentUrl && idx === 0);
+    pathname === subItem.url || pathname.startsWith(subItem.url + "/");
 
   return (
     <SidebarMenuSubItem key={subItem.title}>
       <SidebarMenuSubButton
         asChild
+        isActive={isActive}
         className="hover:bg-pink-100 dark:hover:bg-pink-900 
                    data-[active=true]:bg-pink-500 data-[active=true]:text-white 
                    text-white font-sans py-4 rounded-md"
@@ -37,7 +44,6 @@ export default function SidebarSubItem({
           onClick={() => {
             if (isMobile) setOpenMobile(false);
           }}
-          className={isActive ? "bg-pink-500 text-white" : ""}
         >
           {subItem.icon && <subItem.icon className="mr-2 !text-inherit" />}
           <span>{subItem.title}</span>

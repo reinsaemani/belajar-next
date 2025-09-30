@@ -4,7 +4,7 @@ import { Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Vacancy } from '@/types/api';
 import { useDeleteVacancy } from '../api/delete-vacancies';
-import { ConfirmationDialog } from '@/components/Dialog/ConfirmationDialog';
+import { ConfirmationDialog } from '@/components/dialog/ConfirmationDialog';
 import { toast } from 'sonner';
 
 type DeleteVacancyProps = {
