@@ -11,7 +11,6 @@ export const getUser = async (): Promise<Account | null> => {
     if (!response.success || !response.data) return null;
     return response.data;
   } catch {
-    // kalau unauthorized, balikin null (bukan undefined!)
     return null;
   }
 };

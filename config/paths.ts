@@ -22,10 +22,13 @@ export const paths = {
       },
       allApplicants: {
         getHref: () => "/applicants/all-applicants",
-        getHrefById: (id: string | number) => `/applicants/all-applicants/${id}`,
+        getHrefById: (id: string | number) =>
+          `/applicants/all-applicants/${id}`,
       },
       recruitmentStages: {
-        getHref: () => "/recruitment-stages",
+        getHref: () => "/applicants/recruitment-stages",
+        getHrefById: (id: string | number) =>
+          `/applicants/recruitment-stages/${id}`,
       },
     },
     search: {

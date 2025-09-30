@@ -5,13 +5,13 @@ import {
   Settings,
   User,
   Calendar1Icon,
-} from "lucide-react"
+} from "lucide-react";
 
 export const user = {
   name: "shadcn",
   email: "m@example.com",
   avatar: "/logo_waleta.svg",
-}
+};
 
 export const sidebarItems = [
   {
@@ -36,7 +36,7 @@ export const sidebarItems = [
       },
       {
         title: "Recruitment Stages",
-        url: "/recruitment-stages",
+        url: "/applicants/recruitment-stages",
         icon: Calendar1Icon,
       },
     ],
@@ -51,4 +51,4 @@ export const sidebarItems = [
     url: "/settings",
     icon: Settings,
   },
-]
+];

@@ -53,7 +53,6 @@ export function LoginForm({
           />
         </div>
 
-        {/* Error Message */}
         {errorMessage && (
           <span className="text-sm text-red-500">{errorMessage}</span>
         )}
