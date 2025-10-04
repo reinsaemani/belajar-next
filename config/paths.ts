@@ -17,19 +17,9 @@ export const paths = {
       getHref: () => "/vacancies",
     },
     applicants: {
-      root: {
-        getHref: () => "/applicants",
-      },
-      allApplicants: {
-        getHref: () => "/applicants/all-applicants",
-        getHrefById: (id: string | number) =>
-          `/applicants/all-applicants/${id}`,
-      },
-      recruitmentStages: {
-        getHref: () => "/applicants/recruitment-stages",
-        getHrefById: (id: string | number) =>
-          `/applicants/recruitment-stages/${id}`,
-      },
+      getHref: () => "/applicants",
+      getHrefDetailsById: (id: string | number) => `/applicants/${id}/details`,
+      getHrefRecordById: (id: string | number) => `/applicants/${id}/records`,
     },
     search: {
       getHref: () => "/search",

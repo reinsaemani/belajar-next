@@ -28,12 +28,18 @@ export function findBreadcrumbPath(
       if (found) return found;
     }
 
-    // ✅ kalau bukan persis match tapi masih prefix (nested detail)
+    // ✅ kalau prefix match (misalnya /applicants/123)
     if (url.startsWith(item.url + "/")) {
+      // tambahkan crumb dinamis untuk /details atau /records
+      if (url.includes("/details")) {
+        return [...current, { label: "Detail", href: url }];
+      }
+      if (url.includes("/records")) {
+        return [...current, { label: "Records", href: url }];
+      }
+
       return current;
     }
   }
   return null;
 }
-
-

@@ -1,5 +1,3 @@
-// features/applicants/api/all-applicants/get-applicant.ts
-
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import { Applicant } from "@/types/api";

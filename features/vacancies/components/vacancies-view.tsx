@@ -31,10 +31,10 @@ export function VacancyView({ vacancyId }: { vacancyId: number }) {
           <Briefcase className="w-6 h-6 text-primary" />
           {vacancy.title}
         </h2>
-        <p className="text-sm text-muted-foreground flex items-center gap-1">
+        {/* <p className="text-sm text-muted-foreground flex items-center gap-1">
           <MapPin className="w-4 h-4" />
           {vacancy.location || "Location not specified"}
-        </p>
+        </p> */}
       </div>
 
       {/* Status */}

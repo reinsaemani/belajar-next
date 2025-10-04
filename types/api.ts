@@ -13,21 +13,25 @@ export type Meta = {
   totalPages: number;
 };
 
-export type Vacancy = Entity<{
+// _____________  Vacancy  _____________
+export type Vacancy = {
   vacancies_id: number;
   title: string;
-  location: string | null;
-  type: string;
-  degree: string;
-  qualification: string;
-  responsibilities: string;
+  type: "Full_Time" | "Internship" | "Freelance";
+  degree: "SMP" | "SMA_SMK" | "Diploma" | "Sarjana" | "Magister" | null;
+  level: "Staff" | "Pejuang" | null;
+  qualification: string | null;
+  responsibilities: string | null;
   documents: string | null;
   benefit: string | null;
-  deadline: string;
+  deadline: string | null;
   is_open: boolean;
-}>;
+  created_at: string;
+  updated_at: string | null;
+};
 
-export type User = Entity<{
+// _____________  User  _____________
+export type User = {
   user_id: number;
   NIK: string | null;
   full_name: string;
@@ -47,28 +51,45 @@ export type User = Entity<{
   university_school: string | null;
   department_faculty: string | null;
   study_program: string | null;
-  educational_level: "SMA_SMK" | "Diploma" | "Sarjana" | "Magister" | null;
-  work_experience: string | null;
+  educational_level:
+    | "SMP"
+    | "SMA_SMK"
+    | "Diploma"
+    | "Sarjana"
+    | "Magister"
+    | null;
+  work_experience:
+    | "FRESH_GRADUATE"
+    | "ONE_TO_THREE"
+    | "THREE_TO_FIVE"
+    | "MORE_THAN_FIVE"
+    | null;
+  GPA_grades: string | null;
   banned_until: string | null;
   personality_test_url: string | null;
   created_at: string;
-  updated_at: string;
-}>;
+  updated_at: string | null;
+};
 
-export type ApplicantsDetails = Entity<{
+// _____________  Applicants Details (record per stage)  _____________
+export type ApplicantsDetails = {
   detail_applicants_id: number;
   applicants_id: number;
+  vacancy_id: number;
   stage: "HR_INT" | "SKILL_TEST" | "USER_INT" | "FINAL_INT" | "OFFERING";
-  attempt_no: number;
-  status: "PENDING" | "PASSED" | "FAILED" | "SKIPPED";
+  status: "RECOMMENDED" | "NOT_RECOMMENDED" | "CONSIDERED" | "HOLD";
   notes: string | null;
   penilaian: string | null;
   schedule_at: string | null;
   created_at: string;
-  updated_at: string;
-}>;
+  updated_at: string | null;
+};
 
-export type Applicant = Entity<{
+// Alias untuk Record list view
+export type ApplicantRecord = ApplicantsDetails;
+
+// _____________  Applicant (gabungan user + vacancy + records)  _____________
+export type Applicant = {
   applicants_id: number;
   user_id: number;
   vacancy_id: number;
@@ -79,18 +100,20 @@ export type Applicant = Entity<{
     | "FINAL_INT"
     | "OFFERING"
     | "HIRED"
-    | "REJECTED";
+    | "REJECTED"
+    | null;
   created_at: string;
-  updated_at: string;
+  updated_at: string | null;
   user: User;
   vacancy: Vacancy;
   details?: ApplicantsDetails[];
-}>;
+};
 
+// _____________  Account & Auth  _____________
 export type Account = {
   account_id: number;
   username: string;
-  role: "ADMIN" | "PENGAWAS";
+  role: "ADMIN" | "PENGAWAS" | "INTERVIEWER";
 };
 
 export type AuthResponse = {

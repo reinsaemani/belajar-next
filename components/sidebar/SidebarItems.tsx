@@ -28,18 +28,6 @@ export const sidebarItems = [
     title: "Manage Applicants",
     url: "/applicants",
     icon: User,
-    items: [
-      {
-        title: "All Applicants",
-        url: "/applicants/all-applicants",
-        icon: User,
-      },
-      {
-        title: "Recruitment Stages",
-        url: "/applicants/recruitment-stages",
-        icon: Calendar1Icon,
-      },
-    ],
   },
   {
     title: "Search",

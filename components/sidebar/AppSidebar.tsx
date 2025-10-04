@@ -26,7 +26,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" variant="inset">
       {/* Header */}
-      <SidebarHeader>
+      <SidebarHeader >
         <SidebarHeaderSection />
         <SidebarSeparator />
       </SidebarHeader>

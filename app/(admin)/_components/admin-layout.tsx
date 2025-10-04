@@ -20,13 +20,11 @@ export const AdminLayout = ({ children }: { children: ReactNode }) => {
     if (isLoading) return;
 
     if (!user) {
-      // belum login
       router.replace(paths.auth.login.getHref());
       return;
     }
 
     if (user.role !== "ADMIN" && user.role !== "PENGAWAS") {
-      // role tidak valid
       router.replace(paths.home.getHref());
     }
   }, [user, isLoading, router, pathname]);

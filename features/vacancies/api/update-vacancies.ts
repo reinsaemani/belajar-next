@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api-client';
-import { z } from 'zod';
-import { MutationConfig } from '@/lib/react-query';
-import { Vacancy } from '@/types/api';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/api-client";
+import { z } from "zod";
+import { MutationConfig } from "@/lib/react-query";
+import { Vacancy } from "@/types/api";
 
 // Schema optional update
 export const updateVacancyInputSchema = z.object({
@@ -11,7 +11,7 @@ export const updateVacancyInputSchema = z.object({
   degree: z.string().optional(),
   deadline: z.string().optional(),
   type: z.string().optional(),
-  location: z.string().optional(),
+  level: z.string().optional(),
   qualification: z.string().optional(),
   responsibilities: z.string().optional(),
   documents: z.string().optional(),
@@ -41,7 +41,7 @@ export const useUpdateVacancy = ({
   return useMutation({
     mutationFn: updateVacancy,
     onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: ['vacancies'] });
+      queryClient.invalidateQueries({ queryKey: ["vacancies"] });
       onSuccess?.(...args);
     },
     ...restConfig,
