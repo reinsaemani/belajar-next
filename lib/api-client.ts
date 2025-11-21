@@ -67,31 +67,26 @@ async function fetchApi<T>(
 
   const fullUrl = buildUrlWithParams(`${env.API_URL}${url}`, params);
 
+  const isFormData =
+    typeof FormData !== "undefined" && body instanceof FormData;
+
   const response = await fetch(fullUrl, {
     method,
     headers: {
-      "Content-Type": "application/json",
       Accept: "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...headers,
       ...(cookieHeader ? { Cookie: cookieHeader } : {}),
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: isFormData
+      ? (body as FormData)
+      : body
+      ? JSON.stringify(body)
+      : undefined,
     credentials: "include",
     cache,
     next,
   });
-
-  // if (!response.ok) {
-  //   const message = (await response.json()).message || response.statusText;
-  //   if (typeof window !== "undefined") {
-  //     useNotifications.getState().addNotification({
-  //       type: "error",
-  //       title: "Error",
-  //       message,
-  //     });
-  //   }
-  //   throw new Error(message);
-  // }
 
   return response.json();
 }

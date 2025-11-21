@@ -8,7 +8,7 @@ export const getApplicantRecords = async ({
   applicantId: string | number;
 }) => {
   const res = await api.get<{ data: ApplicantRecord[] }>(
-    `/applicants/${applicantId}`
+    `/applicants-details?applicants_id=${applicantId}`
   );
   return res.data;
 };

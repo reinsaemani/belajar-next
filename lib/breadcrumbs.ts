@@ -2,6 +2,7 @@ export type SidebarItem = {
   title: string;
   url: string;
   items?: SidebarItem[];
+  subItems?: SidebarItem[];
 };
 
 export type Crumb = {
@@ -17,20 +18,16 @@ export function findBreadcrumbPath(
   for (const item of items) {
     const current = [...path, { label: item.title, href: item.url }];
 
-    // ✅ kalau persis match → return
-    if (item.url === url) {
-      return current;
-    }
+    if (item.url === url) return current;
 
-    // ✅ kalau punya anak → cari di dalam dulu
-    if (item.items) {
-      const found = findBreadcrumbPath(item.items, url, current);
+    // ⬇️ cek baik 'items' maupun 'subItems'
+    const children = item.items || item.subItems;
+    if (children) {
+      const found = findBreadcrumbPath(children, url, current);
       if (found) return found;
     }
 
-    // ✅ kalau prefix match (misalnya /applicants/123)
     if (url.startsWith(item.url + "/")) {
-      // tambahkan crumb dinamis untuk /details atau /records
       if (url.includes("/details")) {
         return [...current, { label: "Detail", href: url }];
       }

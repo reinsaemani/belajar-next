@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { AuthResponse, Account } from "@/types/api";
-import { api } from "./api-client";
+import { api } from "../../../lib/api-client";
 
 export const getUser = async (): Promise<Account | null> => {
   try {

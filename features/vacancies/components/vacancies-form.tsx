@@ -29,7 +29,7 @@ const VACANCY_LEVELS = [
 ];
 
 type VacancyFormProps = {
-  id?: string; // optional id so parent can trigger submit
+  id?: string;
   initialData?: Partial<CreateVacancyInput>;
   onSubmit: (data: CreateVacancyInput) => Promise<void>;
   onCancel: () => void;

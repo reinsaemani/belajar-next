@@ -5,8 +5,8 @@ import { ReactNode, useEffect } from "react";
 import { GalleryVerticalEnd } from "lucide-react";
 
 import { paths } from "@/config/paths";
-import { useUser } from "@/lib/auth";
-import { Spinner } from "@/components/ui/spinner";
+import { useUser } from "@/features/auth/api/auth";
+import Image from "next/image";
 
 type LayoutProps = {
   children: ReactNode;
@@ -24,7 +24,7 @@ export const AuthLayout = ({ children }: LayoutProps) => {
       router.replace(
         redirectTo
           ? decodeURIComponent(redirectTo)
-          : paths.app.dashboard.getHref()
+          : paths.app.admin.dashboard.getHref()
       );
     }
   }, [user, isLoading, router, redirectTo]);
@@ -47,11 +47,14 @@ export const AuthLayout = ({ children }: LayoutProps) => {
       </div>
 
       {/* Right Side (Image) */}
-      <div className="bg-muted relative hidden lg:block">
-        <img
-          src="/placeholder.svg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+      <div className="hidden lg:flex items-center justify-center bg-muted">
+        <Image
+          src="/logo_waleta.svg"
+          alt="Logo Waleta"
+          width={600}
+          height={600}
+          className="object-contain"
+          loading="lazy"
         />
       </div>
     </div>

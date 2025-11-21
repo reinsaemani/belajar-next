@@ -15,6 +15,7 @@ export type Meta = {
 
 // _____________  Vacancy  _____________
 export type Vacancy = {
+  id: any;
   vacancies_id: number;
   title: string;
   type: "Full_Time" | "Internship" | "Freelance";
@@ -76,17 +77,29 @@ export type ApplicantsDetails = {
   detail_applicants_id: number;
   applicants_id: number;
   vacancy_id: number;
-  stage: "HR_INT" | "SKILL_TEST" | "USER_INT" | "FINAL_INT" | "OFFERING";
+  stage:
+    | "SCREENING"
+    | "HR_INT"
+    | "SKILL_TEST"
+    | "USER_INT"
+    | "FINAL_INT"
+    | "OFFERING"
+    | "HIRED";
   status: "RECOMMENDED" | "NOT_RECOMMENDED" | "CONSIDERED" | "HOLD";
   notes: string | null;
-  penilaian: string | null;
+  penilaian_file_path: string | null;
   schedule_at: string | null;
   created_at: string;
   updated_at: string | null;
 };
 
 // Alias untuk Record list view
-export type ApplicantRecord = ApplicantsDetails;
+export type ApplicantRecord = ApplicantsDetails & {
+  applicant?: {
+    user?: Pick<User, "full_name">;
+  };
+  vacancy?: Pick<Vacancy, "title">;
+};
 
 // _____________  Applicant (gabungan user + vacancy + records)  _____________
 export type Applicant = {
@@ -94,6 +107,7 @@ export type Applicant = {
   user_id: number;
   vacancy_id: number;
   current_stage:
+    | "SCREENING"
     | "HR_INT"
     | "SKILL_TEST"
     | "USER_INT"
@@ -119,4 +133,15 @@ export type Account = {
 export type AuthResponse = {
   jwt: string;
   user: Account;
+};
+
+// _____________  Banner  _____________
+export type Banner = {
+  banner_id: number;
+  title: string | null;
+  image_path: string;
+  is_active: boolean;
+  order: number;
+  created_at: string;
+  updated_at: string | null;
 };

@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { paths } from "@/config/paths";
-import { useLogin } from "@/lib/auth";
+import { useLogin } from "@/features/auth/api/auth";
 import { useState } from "react";
 import { LoginForm } from "@/features/auth/components/login-form";
 
@@ -14,7 +14,7 @@ export default function LoginPage() {
   const login = useLogin({
     onSuccess: (user) => {
       if (user.role === "ADMIN" || user.role === "PENGAWAS") {
-        router.replace(redirectTo ?? paths.app.dashboard.getHref());
+        router.replace(redirectTo ?? paths.app.admin.dashboard.getHref());
       } else {
         router.replace(paths.home.getHref());
       }

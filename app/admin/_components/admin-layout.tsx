@@ -1,44 +1,36 @@
 "use client";
 
 import { ReactNode, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { useUser } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/features/auth/api/auth";
 import { paths } from "@/config/paths";
-
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { SiteHeader } from "@/components/sidebar/SideHeader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "sonner";
-import { Spinner } from "@/components/ui/spinner";
+import Loading from "@/app/loading";
 
 export const AdminLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const pathname = usePathname();
   const { data: user, isLoading } = useUser();
 
   useEffect(() => {
     if (isLoading) return;
-
     if (!user) {
       router.replace(paths.auth.login.getHref());
       return;
     }
-
     if (user.role !== "ADMIN" && user.role !== "PENGAWAS") {
       router.replace(paths.home.getHref());
     }
-  }, [user, isLoading, router, pathname]);
+  }, [isLoading, user]);
 
   if (isLoading || !user) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Spinner size="xl" />
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
-    <div>
+    <div suppressHydrationWarning>
       <Toaster richColors position="top-right" />
       <SidebarProvider
         style={

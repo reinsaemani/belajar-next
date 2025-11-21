@@ -1,6 +1,6 @@
 export const paths = {
   home: {
-    getHref: () => "/dashboard",
+    getHref: () => "/admin/dashboard", // Untuk Admin
   },
 
   auth: {
@@ -10,22 +10,44 @@ export const paths = {
   },
 
   app: {
-    dashboard: {
-      getHref: () => "/dashboard",
+    admin: {
+      dashboard: {
+        getHref: () => "/admin/dashboard", // Admin dashboard
+      },
+      vacancies: {
+        getHref: () => "/admin/vacancies", // Admin vacancies
+      },
+      applicants: {
+        getHref: () => "/admin/applicants",
+        getHrefDetailsById: (id: string | number) =>
+          `/admin/applicants/${id}/details`,
+        getHrefRecordById: (id: string | number) =>
+          `/admin/applicants/${id}/records`,
+      },
+      search: {
+        getHref: () => "/admin/search",
+      },
+      settings: {
+        getHref: () => "/admin/settings",
+      },
+      resetPassword: {
+        getHref: () => `/admin/reset-password`,
+      },
+      manageContents: {
+        getHref: () => "/admin/contents",
+        banners: {
+          getHref: () => "/admin/contents/banner",
+        },
+        testimonials: {
+          getHref: () => "/admin/contents/testimonials",
+        },
+      },
     },
-    vacancies: {
-      getHref: () => "/vacancies",
-    },
-    applicants: {
-      getHref: () => "/applicants",
-      getHrefDetailsById: (id: string | number) => `/applicants/${id}/details`,
-      getHrefRecordById: (id: string | number) => `/applicants/${id}/records`,
-    },
-    search: {
-      getHref: () => "/search",
-    },
-    settings: {
-      getHref: () => "/settings",
+
+    client: {
+      vacancies: {
+        getHref: () => "/vacancies",
+      },
     },
   },
 } as const;

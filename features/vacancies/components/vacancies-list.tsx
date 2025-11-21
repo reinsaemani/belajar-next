@@ -1,7 +1,6 @@
 "use client";
 
 import { DataTable } from "@/components/datatable/DataTable";
-import { SkeletonTable } from "@/components/skeleton/SkeletonTable";
 import { useVacancies } from "../api/get-vacancies";
 import { Vacancy } from "@/types/api";
 import { formatDate, formatType } from "@/utils/format";
@@ -22,6 +21,7 @@ import { SearchAndAddBar } from "@/components/SearchAndAddBar";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Eye, Pencil } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { SkeletonBlock } from "@/components/skeleton";
 
 export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({}) => {
   const [viewOpen, setViewOpen] = React.useState(false);
@@ -189,6 +189,12 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({}) => {
           <DropdownMenuItem onClick={() => handleView(row.original)}>
             <Eye className="w-4 h-4 mr-2" /> View
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleEdit(row.original)}>
+            <Pencil className="w-4 h-4 mr-2" /> Edit
+          </DropdownMenuItem>
+          <div className="px-2 py-1">
+            <DeleteVacancy vacancy={row.original} />
+          </div>
         </TableActions>
       ),
     },
@@ -196,17 +202,8 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({}) => {
 
   const columnsToUse = isMobile ? columnsMobile : columnsAll;
 
-  // Skeleton while loading
   if (vacanciesQuery.isLoading) {
-    return (
-      <div className="space-y-4 animate-pulse">
-        <div className="flex items-center gap-2">
-          <div className="h-10 w-1/3 bg-gray-200 rounded"></div>
-          <div className="h-10 w-24 bg-gray-200 rounded"></div>
-        </div>
-        <SkeletonTable columns={columnsToUse.length} rows={10} />
-      </div>
-    );
+    return <SkeletonBlock lines={12} className="p-4" />;
   }
 
   return (
@@ -222,7 +219,7 @@ export const VacanciesList: React.FC<{ onAddClick?: () => void }> = ({}) => {
 
       {/* Table wrapper to avoid squishing on mobile */}
       <div className="overflow-x-auto">
-        <div className={isMobile ? "min-w-[480px]" : "min-w-[900px]"}>
+        <div className={isMobile ? "min-w-[512px]" : "min-w-[900px]"}>
           <DataTable<Vacancy>
             data={filteredVacancies}
             columns={columnsToUse}

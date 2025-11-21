@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useLogout } from "@/lib/auth";
-
+import { useLogout } from "@/features/auth/api/auth";
 import {
   BadgeCheck,
   Bell,
@@ -13,7 +12,6 @@ import {
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -98,33 +96,21 @@ export function NavUser({
 
             <DropdownMenuSeparator />
 
+            {/* === Reset Password === */}
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  router.push(paths.app.admin.resetPassword.getHref())
+                }
+              >
                 <Sparkles className="mr-2 size-4" />
-                Upgrade to Pro
+                Reset Password
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck className="mr-2 size-4" />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard className="mr-2 size-4" />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell className="mr-2 size-4" />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-
-            <DropdownMenuSeparator />
-
-            {/* === Logout Button === */}
+            {/* === Logout === */}
             <DropdownMenuItem
               onClick={() => logout.mutate()}
               disabled={logout.isPending}

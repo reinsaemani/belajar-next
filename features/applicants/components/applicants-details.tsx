@@ -39,30 +39,37 @@ export function ApplicantDetail({ applicant, isLoading, error }: Props) {
     return [
       {
         label: "CV",
-        filename: safe(user.documents_files?.cv_path),
-        url: safe(user.documents_files?.cv_path)
-          ? base + user.documents_files.cv_path
+        filename: safe(user.documents?.cv_path),
+        url: safe(user.documents?.cv_path)
+          ? base + user.documents.cv_path
           : undefined,
       },
       {
         label: "ID Card",
-        filename: safe(user.documents_files?.id_card_path),
-        url: safe(user.documents_files?.id_card_path)
-          ? base + user.documents_files.id_card_path
+        filename: safe(user.documents?.id_card_path),
+        url: safe(user.documents?.id_card_path)
+          ? base + user.documents.id_card_path
           : undefined,
       },
       {
         label: "Certificate",
-        filename: safe(user.documents_files?.certificate_path),
-        url: safe(user.documents_files?.certificate_path)
-          ? base + user.documents_files.certificate_path
+        filename: safe(user.documents?.certificate_path),
+        url: safe(user.documents?.certificate_path)
+          ? base + user.documents.certificate_path
           : undefined,
       },
       {
         label: "Photo",
-        filename: safe(user.documents_files?.photo_path),
-        url: safe(user.documents_files?.photo_path)
-          ? base + user.documents_files.photo_path
+        filename: safe(user.documents?.photo_path),
+        url: safe(user.documents?.photo_path)
+          ? base + user.documents.photo_path
+          : undefined,
+      },
+      {
+        label: "Transcript",
+        filename: safe(user.documents?.photo_path),
+        url: safe(user.documents?.photo_path)
+          ? base + user.documents.photo_path
           : undefined,
       },
     ];
@@ -74,7 +81,10 @@ export function ApplicantDetail({ applicant, isLoading, error }: Props) {
     <div className="bg-white rounded-xl shadow mx-auto p-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Applicant Preview</h2>
-        <ApplicantDetailActionsDropdown applicantId={applicant.applicants_id} />
+        <ApplicantDetailActionsDropdown
+          applicantId={applicant.applicants_id}
+          vacancyId={applicant.vacancy.vacancies_id}
+        />
       </div>
 
       {/* === Applicant Info === */}

@@ -8,7 +8,6 @@ import { Eye, MoreHorizontal, NotebookTabs } from "lucide-react";
 
 import { Applicant } from "@/types/api";
 import { DataTable } from "@/components/datatable/DataTable";
-import { SkeletonTable } from "@/components/skeleton/SkeletonTable";
 import { FilterBar } from "@/components/datatable/DataTableFilterSearchDate";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,11 +19,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { paths } from "@/config/paths";
-import { formatCapitalize } from "@/utils/format";
+import { formatCapitalize, formatWorkExperience } from "@/utils/format";
 import { TableActions } from "@/components/datatable/TableActions";
 import { useApplicants } from "../api/get-all";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatStage } from "@/utils/format";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarPreview } from "@/components/avatar/avatar-preview";
+import { getApplicantPhotoUrl } from "@/utils/getApplicantPhotoUrl";
+import { StageBadge } from "./StageBadge";
+import { SkeletonBlock } from "@/components/skeleton";
 
 export const ApplicantsList = () => {
   const [isNavigating, setIsNavigating] = React.useState(false);
@@ -38,18 +42,29 @@ export const ApplicantsList = () => {
 
   const handleViewDetails = (id: number) => {
     setIsNavigating(true);
-    router.push(paths.app.applicants.getHrefDetailsById(id));
+    router.push(paths.app.admin.applicants.getHrefDetailsById(id));
   };
 
   const handleViewRecord = (id: number) => {
     setIsNavigating(true);
-    router.push(paths.app.applicants.getHrefRecordById(id));
+    router.push(paths.app.admin.applicants.getHrefRecordById(id));
   };
 
   function handleReset() {
     setSearch("");
     setDateRange({ from: null, to: null });
   }
+
+  const PhotoNameCell = ({ row }: { row: any }) => {
+    const user = row.original.user;
+    const photoPath = getApplicantPhotoUrl(user?.documents_files?.photo_path);
+
+    return (
+      <div className="flex items-center gap-3">
+        <AvatarPreview src={photoPath} name={user.full_name} />
+      </div>
+    );
+  };
 
   // === Full columns (desktop / tablet) ===
   const columnsAll: ColumnDef<Applicant>[] = [
@@ -59,6 +74,10 @@ export const ApplicantsList = () => {
       cell: ({ row }) => (
         <span className="block text-center">{row.index + 1}</span>
       ),
+    },
+    {
+      id: "photo_name",
+      cell: PhotoNameCell,
     },
     {
       accessorKey: "user.full_name",
@@ -113,7 +132,9 @@ export const ApplicantsList = () => {
       accessorKey: "user.work_experience",
       header: "Work Experience",
       cell: ({ getValue }) => (
-        <span className="block text-center">{getValue<string>() || "-"}</span>
+        <span className="block text-center">
+          {formatWorkExperience(getValue<string>())}
+        </span>
       ),
     },
     {
@@ -131,11 +152,14 @@ export const ApplicantsList = () => {
     {
       accessorKey: "current_stage",
       header: "Current Stage",
-      cell: ({ getValue }) => (
-        <span className="block text-center">
-          {formatStage(getValue<string>())}
-        </span>
-      ),
+      cell: ({ getValue }) => {
+        const stage = getValue<string>() || null;
+        return (
+          <div className="flex justify-center">
+            <StageBadge value={stage} />
+          </div>
+        );
+      },
     },
     {
       id: "actions",
@@ -224,6 +248,7 @@ export const ApplicantsList = () => {
         row.user.educational_level,
         row.user.study_program,
         row.user.work_experience,
+        row.current_stage,
       ]
         .map((v) => (v ? v.toString().toLowerCase() : ""))
         .join(" ");
@@ -244,9 +269,8 @@ export const ApplicantsList = () => {
     });
   }, [applicants, search, dateRange]);
 
-  // loading state uses active column count
   if (applicantsQuery.isLoading || isNavigating) {
-    return <SkeletonTable columns={columnsToUse.length} rows={10} />;
+    return <SkeletonBlock lines={10} className="p-4" />;
   }
 
   // error / empty states (simple)
