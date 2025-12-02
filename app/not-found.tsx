@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Ghost } from "lucide-react";
 
+
 export default function NotFound() {
   return (
     <div className="flex h-screen flex-col items-center justify-center bg-background px-6 text-center">

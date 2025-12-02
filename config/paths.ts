@@ -1,5 +1,7 @@
+import { core } from "zod";
+
 export const paths = {
-  home: {
+  dashboard: {
     getHref: () => "/admin/dashboard", // Untuk Admin
   },
 
@@ -45,8 +47,23 @@ export const paths = {
     },
 
     client: {
+      home: {
+        getHref: () => "/",
+      },
       vacancies: {
         getHref: () => "/vacancies",
+      },
+      about: {
+        getHref: () => "#about-us",
+      },
+      testimonials: {
+        getHref: () => "#testimonials",
+      },
+      core: {
+        getHref: () => "/coreValues",
+      },
+      contact: {
+        getHref: () => "/contact",
       },
     },
   },
